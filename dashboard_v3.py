@@ -960,9 +960,9 @@ Provide accurate Australian historical data in this exact JSON structure:
   "InflationRate": "VALUE ONLY e.g., 3.2%",
   "StampPrice": "VALUE ONLY e.g., 5c or 41c",
   "CinemaPrice": "VALUE ONLY e.g., $0.75 or $7.50",
-  "TopBook": "Title - Author",
+  "TopBook": "Title - Author (MUST have been published in {year} or at most 1 year prior to {year}. NEVER list a book published after {year}. Verify the publication year.)",
   "TopBookDescription": "One sentence description, MAX 15-20 WORDS",
-  "TVShow": "Show name",
+  "TVShow": "Show name (MUST have been on air before or during {year}. NEVER list a show that premiered after {year}, even if it premiered in the same calendar year but after the birth date. Verify the premiere date.)",
   "TVShowDescription": "One sentence description, MAX 15-20 WORDS",
   "FashionTrend": "Trend name",
   "FashionDescription": "One sentence description, MAX 15-20 WORDS",
@@ -1022,10 +1022,23 @@ FORMAT: "Name - [2-3 word profession]" ONLY. No descriptions, no film titles, no
 HISTORICAL EVENTS - MUST HAVE OCCURRED ON {month_name} {day}
 ═══════════════════════════════════════════════════════
 
+⚠️ CRITICAL — "BIRTHDAY BIAS" WARNING:
+Do NOT shift or adjust historical event dates to match the birth date's day number ({day}).
+If an event happened on {month_name} 10 but the birth date is {month_name} {day}, do NOT move it to {month_name} {day}.
+The event date must be the REAL documented date — not adjusted to fit.
+This is a known and common error. Every event date must be independently verifiable as accurate.
+
+REAL EXAMPLES OF THIS ERROR (DO NOT REPEAT):
+❌ Thai cave rescue listed as July 13 — actual rescue completed July 10, 2018
+❌ Last US combat brigade withdrawal listed as August 2, 2010 — actually August 18-19, 2010
+❌ US invasion of Grenada listed as October 27, 1983 — actually October 25, 1983
+❌ Ingmar Bergman death listed as July 31, 2007 — actually July 30, 2007
+
 VERIFICATION PROCESS:
 1. Think: "Did this event REALLY happen on {month_name} {day}?"
 2. The YEAR can vary, but the MONTH and DAY must be {month_name} {day}
-3. Only include if you are CERTAIN about the date
+3. Only include if you are CERTAIN about the date — if unsure, pick a different event
+4. NEVER move an event's real date to match the birth day number
 
 EXAMPLES OF WRONG DATES (DO NOT REPEAT):
 ❌ Titanic left Queenstown on April 10 → Actually April 11, 1912
@@ -1079,6 +1092,17 @@ Number1Song:
 - If {year} ≥ 1988: Use ARIA Charts #1 song for {year}
 - If {year} < 1988: Use worldwide/UK/US #1 song for {year}
 - Format: "Song Title - Artist Name"
+
+TopBook: Must have been published in {year} or at most 1 year prior
+- NEVER list a book published after {year}
+- NEVER list a book published more than 2 years before {year}
+- Verify the exact publication year before including
+- Known error to avoid: listing books from the wrong decade entirely (e.g. The Old Man and the Sea published 1952, not 1956)
+
+TVShow: Must have been on air before or during {year}
+- NEVER list a show that premiered after {year}
+- Even if a show premiered in the same calendar year as {year}, verify it premiered BEFORE the birth month/day
+- Known error to avoid: listing shows 1-2 years before their actual premiere (e.g. In Melbourne Tonight premiered May 1957 — do not list it for a 1956 birth date)
 
 ═══════════════════════════════════════════════════════
 PRICES & ECONOMICS - HISTORICAL DATA FOR {year}
@@ -1163,6 +1187,11 @@ MANDATORY SELF-VERIFICATION - DO NOT SKIP:
    □ Event4: Happened on {month_name} {day} in 2000s-2020s?
    □ All events are 20-30 words (full sentences)?
    □ Each event is from a DIFFERENT era?
+   □ BIRTHDAY BIAS CHECK: Have I verified each event date is the REAL date, NOT shifted to match the birth day number ({day})? (e.g. if birth day is {day}, confirm each event did not actually happen on a different day that I have wrongly moved to {day})
+
+10. BOOK AND TV SHOW VERIFICATION:
+   □ TopBook was published in {year} or at most 1 year prior — NOT after {year}?
+   □ TVShow was on air before or during {year} — NOT a show that premiered after {year}?
 
 4. AUSTRALIAN CURRENCY VERIFICATION:
    □ ALL prices in Australian dollars ($) or cents (c)?
@@ -1215,6 +1244,8 @@ CRITICAL REMINDERS
 ⚠️ WRONG HISTORICAL EVENT DATES ARE THE #2 ERROR  
 ⚠️ BRITISH CURRENCY IN PRICES IS THE #3 ERROR
 ⚠️ 2-DIGIT YEARS INSTEAD OF 4-DIGIT IS THE #4 ERROR
+⚠️ BIRTHDAY BIAS (SHIFTING EVENT DATES TO MATCH BIRTH DAY) IS THE #5 ERROR
+⚠️ BOOK OR TV SHOW FROM WRONG YEAR (PUBLISHED/AIRED AFTER BIRTH DATE) IS THE #6 ERROR
 
 TRIPLE-CHECK these four things above ALL else!
 
@@ -1987,12 +2018,3 @@ def main():
 
 if __name__ == "__main__":
     main()
-
-
-
-
-
-
-
-
-
