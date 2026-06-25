@@ -77,6 +77,7 @@ _AFL_TABLE = _load_year_table("afl_winners.csv")
 _BATHURST_TABLE = _load_year_table("bathurst_winners.csv")
 _AUSOPEN_TABLE = _load_year_table("ausopen_winners.csv")
 _OSCAR_TABLE = _load_year_table("oscar_winners.csv")
+_SALARY_TABLE = _load_year_table("average_salary.csv")
 _PM_TABLE = _load_date_range_table("pm_terms.csv")
 _MONARCH_TABLE = _load_date_range_table("monarchs.csv")
 
@@ -231,6 +232,18 @@ def get_monarch(day: int, month: int, year: int) -> Optional[str]:
     return row.get('name', '').strip() or None
 
 
+def get_average_salary(year: int) -> Optional[str]:
+    """Return the verified average annual salary for a given year in AUD,
+    or None if the year isn't in the table (falls back to LLM generation).
+    1920-1975: sourced from DailyCare/historical wage records (interpolated).
+    1976-2025: sourced from ABS Average Weekly Earnings (Cat 6350.0/6302.0) x52.
+    """
+    row = _SALARY_TABLE.get(year)
+    if not row:
+        return None
+    return row.get('average_annual_salary', '').strip() or None
+
+
 def resolve_lookup_fields(day: int, month: int, year: int) -> Dict[str, Optional[str]]:
     """Master resolver - call this once per order to get every lookup-
     table-backed field in one go. Returns a dict where any field that
@@ -249,4 +262,5 @@ def resolve_lookup_fields(day: int, month: int, year: int) -> Dict[str, Optional
         "PrimeMinister": pm,
         "IncomingPM": incoming_pm,
         "Monarch": get_monarch(day, month, year),
+        "AverageSalary": get_average_salary(year),
     }
