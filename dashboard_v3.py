@@ -1953,15 +1953,27 @@ def main():
                             # Preview
                             with st.expander("👁️ Preview Data"):
                                 st.dataframe(df.head(10))
-                            
-                            # Print PNGs (transparent, ready for Officeworks)
-                            render_png_section(st.session_state.processed_orders)
                         
                         except Exception as e:
                             st.error(f"Error saving CSV: {e}")
         
         else:
             st.info("Select orders from the Orders tab to process")
+        
+        # ----- Persistent output: CSV + Print PNGs -----
+        # These live OUTSIDE the processing branch so they survive the reruns
+        # that Streamlit triggers on every button click.
+        if st.session_state.get("processed_orders"):
+            st.markdown("---")
+            df_persist = pd.DataFrame(st.session_state.processed_orders)
+            st.download_button(
+                label="📥 Download CSV",
+                data=df_persist.to_csv(index=False).encode("utf-8"),
+                file_name=generate_csv_filename(st.session_state.settings),
+                mime="text/csv",
+                key="persist_csv_dl",
+            )
+            render_png_section(st.session_state.processed_orders)
     
     # ========================================================================
     # TAB 3: HISTORY
@@ -2022,12 +2034,3 @@ def main():
 
 if __name__ == "__main__":
     main()
-
-
-
-
-
-
-
-
-
