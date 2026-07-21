@@ -27,7 +27,7 @@ def render_png_section(processed_orders):
         return
 
     st.markdown("---")
-    st.subheader("🖼️ Print PNGs (transparent, ready for Officeworks)")
+    st.subheader("🖼️ Print PNGs")
     st.caption(
         f"Generates 5 transparent A4 @ 300dpi PNGs per pack "
         f"({len(processed_orders)} pack(s) = {len(processed_orders) * 5} files)."
