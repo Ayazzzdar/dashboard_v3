@@ -3,7 +3,7 @@
 The Day Archive - Dashboard V3
 Complete settings system with customizable themes, notifications, and advanced features
 """
- 
+
 import streamlit as st
 import pandas as pd
 import requests
@@ -18,7 +18,8 @@ from settings_manager_v2 import (
     import_settings, reset_settings, get_color_presets, DEFAULT_SETTINGS
 )
 from lookup_tables import resolve_lookup_fields
- 
+from png_export import render_png_section
+
 # Page configuration
 st.set_page_config(
     page_title="The Day Archive - Dashboard V3",
@@ -26,11 +27,11 @@ st.set_page_config(
     layout="wide",
     initial_sidebar_state="expanded"
 )
- 
+
 # ============================================================================
 # CUSTOM THEME APPLICATION
 # ============================================================================
- 
+
 def apply_custom_theme(settings):
     """Apply thin, clean design like Plecto using The Day Archive brand colors"""
     
@@ -226,15 +227,15 @@ def apply_custom_theme(settings):
         hr {{ border-top: 1px solid rgba(255, 255, 255, 0.05); }}
     </style>
     """, unsafe_allow_html=True)
- 
+
 # ============================================================================
 # SESSION STATE INITIALIZATION
 # ============================================================================
- 
+
 # Load settings
 if 'settings' not in st.session_state:
     st.session_state.settings = load_settings()
- 
+
 if 'processing' not in st.session_state:
     st.session_state.processing = False
 if 'processed_orders' not in st.session_state:
@@ -266,14 +267,14 @@ if 'api_credentials' not in st.session_state:
         'shopify_token': '',
         'claude_api_key': ''
     }
- 
+
 # Apply theme
 apply_custom_theme(st.session_state.settings)
- 
+
 # ============================================================================
 # SETTINGS PAGE FUNCTION
 # ============================================================================
- 
+
 def render_settings_page():
     """Render the complete settings page with all options"""
     st.title("⚙️ Dashboard Settings")
@@ -719,11 +720,11 @@ def render_settings_page():
     
     # Update session state
     st.session_state.settings = settings
- 
+
 # ============================================================================
 # HELPER FUNCTIONS
 # ============================================================================
- 
+
 def calculate_star_sign(month: int, day: int) -> str:
     """Calculate zodiac star sign"""
     if (month == 12 and day >= 22) or (month == 1 and day <= 19):
@@ -750,7 +751,7 @@ def calculate_star_sign(month: int, day: int) -> str:
         return "SCORPIO"
     else:
         return "SAGITTARIUS"
- 
+
 def get_birthstone(month: int) -> str:
     """Get birthstone for month"""
     stones = [
@@ -758,7 +759,7 @@ def get_birthstone(month: int) -> str:
         "Ruby", "Peridot", "Sapphire", "Opal", "Topaz", "Turquoise"
     ]
     return stones[month - 1]
- 
+
 def get_month_name(month: int) -> str:
     """Get month name"""
     months = [
@@ -766,17 +767,17 @@ def get_month_name(month: int) -> str:
         "July", "August", "September", "October", "November", "December"
     ]
     return months[month - 1]
- 
+
 def get_day_of_week(day: int, month: int, year: int) -> str:
     """Calculate day of week"""
     date = datetime(year, month, day)
     days = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"]
     return days[date.weekday()]
- 
+
 # ============================================================================
 # SHOPIFY API FUNCTIONS
 # ============================================================================
- 
+
 def fetch_shopify_orders(api_token: str, store_url: str) -> List[Dict]:
     """Fetch ALL unfulfilled orders from Shopify using pagination"""
     base_url = f"https://{store_url}/admin/api/2024-01/orders.json"
@@ -830,7 +831,7 @@ def fetch_shopify_orders(api_token: str, store_url: str) -> List[Dict]:
             break
     
     return all_orders
- 
+
 def extract_personalization_data(order: Dict, item_index: int = 0) -> Optional[tuple]:
     """Extract Full Name and Birthday from a specific line item in an order
     
@@ -873,15 +874,15 @@ def extract_personalization_data(order: Dict, item_index: int = 0) -> Optional[t
     
     # Return tuple even if values are empty strings (so we can edit them)
     return (full_name or "", birthday or "")
- 
+
 def get_line_item_count(order: Dict) -> int:
     """Get the number of line items in an order"""
     return len(order.get("line_items", []))
- 
+
 # ============================================================================
 # CLAUDE API FUNCTION
 # ============================================================================
- 
+
 def research_with_claude(month_name: str, day: int, year: int, api_key: str, progress_callback=None) -> Dict:
     """Call Claude API to research historical data"""
     
@@ -889,24 +890,24 @@ def research_with_claude(month_name: str, day: int, year: int, api_key: str, pro
         progress_callback("🔍 Researching with Claude API...")
     
     prompt = f"""You are a historical research expert. Research accurate historical data for {month_name} {day}, {year} in Australia.
- 
+
 🎯 MISSION: Provide 100% ACCURATE, VERIFIABLE data. Accuracy is MORE important than speed.
- 
+
 CRITICAL RULES:
 1. CELEBRITIES: ONLY people ACTUALLY born on {month_name} {day} (verify the date in your knowledge)
 2. HISTORICAL EVENTS: ONLY events that ACTUALLY happened on {month_name} {day} (verify the date)
 3. SPORTS/ENTERTAINMENT: ONLY actual winners/champions for {year} (verify the year)
 4. PRICES/DATA: Use your most reliable historical knowledge for {year}
- 
+
 ⚠️ TRIPLE-CHECK THESE BEFORE INCLUDING:
 - Celebrity birthdays: Is their birthday REALLY {month_name} {day}?
 - Historical event dates: Did this REALLY happen on {month_name} {day}?
 - Sports winners: Is this the ACTUAL winner for {year}?
- 
+
 If you are NOT CERTAIN about a date, DO NOT include that item. Better to skip than be wrong.
- 
+
 Return ONLY valid JSON (no markdown, no preambles, no explanations).
- 
+
 CRITICAL FORMATTING RULES:
 - All monetary values: AUSTRALIAN DOLLARS ($) or CENTS (c) ONLY
   ⚠️ NEVER use British pounds (£), shillings (s), or pence (d)
@@ -919,9 +920,9 @@ CRITICAL FORMATTING RULES:
 - HISTORICAL EVENTS: Must be events that happened on {month_name} {day} across different eras (1800s, early 1900s, mid 1900s, 2000s)
   - Look for events on {month_name} {day} in 1800s, early 1900s (1900-1940), mid-late 1900s (1950-1990), and 2000s-2020s
   - If no significant events can be found for that specific DATE, then use events from {year} instead
- 
+
 Provide accurate Australian historical data in this exact JSON structure:
- 
+
 {{
   "PrimeMinister": "Name of Australian PM serving in {year}",
   "IncomingPM": "Name of the PM who came to power AFTER the current PM (regardless of what year they took office)",
@@ -991,127 +992,127 @@ Provide accurate Australian historical data in this exact JSON structure:
   "GirlName9": "9th",
   "GirlName10": "10th"
 }}
- 
+
 ⚠️ DETAILED ACCURACY REQUIREMENTS - READ CAREFULLY ⚠️
- 
+
 ═══════════════════════════════════════════════════════
 CELEBRITIES - BIRTH DATE MUST BE {month_name} {day}
 ═══════════════════════════════════════════════════════
- 
+
 VERIFICATION PROCESS:
 1. Think: "Is this person REALLY born on {month_name} {day}?"
 2. Check your knowledge carefully
 3. Only include if you are CERTAIN the birth date matches
- 
+
 EXAMPLES OF WRONG DATES (DO NOT REPEAT THESE MISTAKES):
 ❌ John Travolta for August 25 → Actually born February 18
 ❌ Olivia Newton-John for August 25 → Actually born September 26
 ❌ Paul Hogan for August 25 → Actually born October 8
 ❌ Helen Reddy for October 24 → Actually born October 25
- 
+
 EXAMPLES OF CORRECT DATES:
 ✅ Sean Connery for August 25 → Born August 25, 1930
 ✅ Tim Burton for August 25 → Born August 25, 1958
 ✅ Blake Lively for August 25 → Born August 25, 1987
- 
+
 USE WORLDWIDE CELEBRITIES - not limited to Australia
 EACH PERSON MUST BE DIFFERENT - no repeats
 FORMAT: "Name - [2-3 word profession]" ONLY. No descriptions, no film titles, no "known for".
- 
+
 ═══════════════════════════════════════════════════════
 HISTORICAL EVENTS - MUST HAVE OCCURRED ON {month_name} {day}
 ═══════════════════════════════════════════════════════
- 
+
 ⚠️ CRITICAL — "BIRTHDAY BIAS" WARNING:
 Do NOT shift or adjust historical event dates to match the birth date's day number ({day}).
 If an event happened on {month_name} 10 but the birth date is {month_name} {day}, do NOT move it to {month_name} {day}.
 The event date must be the REAL documented date — not adjusted to fit.
 This is a known and common error. Every event date must be independently verifiable as accurate.
- 
+
 REAL EXAMPLES OF THIS ERROR (DO NOT REPEAT):
 ❌ Thai cave rescue listed as July 13 — actual rescue completed July 10, 2018
 ❌ Last US combat brigade withdrawal listed as August 2, 2010 — actually August 18-19, 2010
 ❌ US invasion of Grenada listed as October 27, 1983 — actually October 25, 1983
 ❌ Ingmar Bergman death listed as July 31, 2007 — actually July 30, 2007
- 
+
 VERIFICATION PROCESS:
 1. Think: "Did this event REALLY happen on {month_name} {day}?"
 2. The YEAR can vary, but the MONTH and DAY must be {month_name} {day}
 3. Only include if you are CERTAIN about the date — if unsure, pick a different event
 4. NEVER move an event's real date to match the birth day number
- 
+
 EXAMPLES OF WRONG DATES (DO NOT REPEAT):
 ❌ Titanic left Queenstown on April 10 → Actually April 11, 1912
 ❌ Buchenwald liberated April 10 → Actually April 11, 1945
 ❌ Treaty signed April 10, 1818 → Actually February 22, 1819
- 
+
 EXAMPLES OF CORRECT DATES:
 ✅ Safety pin patented April 10, 1849 → Correct
 ✅ Paul McCartney announced Beatles breakup April 10, 1970 → Correct
 ✅ Polish plane crash April 10, 2010 → Correct
- 
+
 EACH EVENT MUST BE A FULL SENTENCE (25-35 words):
 Example: "On April 10, 1912, the RMS Titanic departed from Southampton, England on its maiden voyage across the Atlantic, carrying over 2,200 passengers and crew toward its tragic fate."
- 
+
 Find 4 events from DIFFERENT eras:
 - 1800s (1800-1899)
 - Early 1900s (1900-1945)
 - Mid-Late 1900s (1946-1999)
 - 2000s-2020s (2000-present)
- 
+
 ═══════════════════════════════════════════════════════
 SPORTS WINNERS - MUST BE ACTUAL WINNERS FOR {year}
 ═══════════════════════════════════════════════════════
- 
+
 NRL Winner: Use your knowledge of {year} NRL/NSWRL premiership
 - Before 1998: Use NSWRL premiership winner
 - 1998+: Use NRL premiership winner
 - Provide full team name (e.g., "Manly-Warringah Sea Eagles")
- 
+
 AFL Winner: Actual {year} VFL/AFL premiership winner
 - Before 1990: VFL Grand Final winner
 - 1990+: AFL Grand Final winner
- 
+
 Bathurst 1000: Actual winner(s) of {year} race
 - Include driver names (the EXACT pairing/trio that won THAT SPECIFIC year - co-drivers change year to year, do not assume a famous driver's usual teammate)
 - Double check: some years have 3 drivers credited (e.g. due to a mid-race car swap), not always 2
 - Do NOT default to a well-known driver (e.g. Peter Brock, Dick Johnson) just because they are associated with that era - verify they actually won {year} specifically, not a nearby year
 - If unsure, prioritise accuracy over a "plausible sounding" pairing
- 
+
 Australian Open: Singles champions for {year}
 - Format: "Men: [Name], Women: [Name]"
- 
+
 ═══════════════════════════════════════════════════════
 ENTERTAINMENT - VERIFY YEAR {year}
 ═══════════════════════════════════════════════════════
- 
+
 Best Actor/Actress: Academy Awards for {year} films
 - Format: "Actor Name - Film Title"
- 
+
 Number1Song: 
 - If {year} ≥ 1988: Use ARIA Charts #1 song for {year}
 - If {year} < 1988: Use worldwide/UK/US #1 song for {year}
 - Format: "Song Title - Artist Name"
- 
+
 TopBook: Must have been published in {year} or at most 1 year prior
 - NEVER list a book published after {year}
 - NEVER list a book published more than 2 years before {year}
 - Verify the exact publication year before including
 - Known error to avoid: listing books from the wrong decade entirely (e.g. The Old Man and the Sea published 1952, not 1956)
- 
+
 TVShow: Must have been on air before or during {year}
 - NEVER list a show that premiered after {year}
 - Even if a show premiered in the same calendar year as {year}, verify it premiered BEFORE the birth month/day
 - Known error to avoid: listing shows 1-2 years before their actual premiere (e.g. In Melbourne Tonight premiered May 1957 — do not list it for a 1956 birth date)
- 
+
 ═══════════════════════════════════════════════════════
 PRICES & ECONOMICS - HISTORICAL DATA FOR {year}
 ═══════════════════════════════════════════════════════
- 
+
 ⚠️ CRITICAL: ALL PRICES MUST BE IN AUSTRALIAN DOLLARS ($) OR CENTS (c)
 ⚠️ DO NOT USE British pounds (£), shillings (s), or pence (d)
 ⚠️ Convert to Australian decimal currency
- 
+
 All prices must reflect {year} Australian values IN AUSTRALIAN CURRENCY:
 - AverageSalary: Annual wage in AUD (e.g., "$520" or "$2,080")
 - AverageHouse: House price in AUD (e.g., "$8,500" or "$1,200")
@@ -1122,7 +1123,7 @@ All prices must reflect {year} Australian values IN AUSTRALIAN CURRENCY:
 - CadburyBarPrice: In AUD (e.g., "5c" or "$0.05")
 - StampPrice: In AUD (e.g., "3c" or "$0.03")
 - CinemaPrice: In AUD (e.g., "$0.50" or "50c")
- 
+
 CURRENCY RULES:
 - Before 1966: Australia used pounds/shillings/pence - CONVERT to approximate dollar value
   Example: £312 → "$624" (roughly £1 = $2 conversion)
@@ -1130,40 +1131,40 @@ CURRENCY RULES:
   Example: 2s 6d (two shillings sixpence) → "25c" (approximate)
 - 1966 onwards: Use decimal Australian dollars directly
 - Always use $ or c symbols, NEVER £, s, or d
- 
+
 Format: VALUE ONLY (just the number with $ or c, no words)
 Examples: "$2,080" or "8c" or "$0.15"
- 
+
 ═══════════════════════════════════════════════════════
 GOVERNMENT - VERIFY WHO SERVED IN {year}
 ═══════════════════════════════════════════════════════
- 
+
 PrimeMinister: Who was Australian PM during {year}?
 IncomingPM: Who became PM AFTER the current PM? (can be years later)
 Monarch: Who was British monarch during {year}?
- 
+
 ═══════════════════════════════════════════════════════
 BABY NAMES - ACTUAL AUSTRALIAN POPULARITY FOR {year}
 ═══════════════════════════════════════════════════════
- 
+
 Top 10 boys and girls names in Australia for {year}
 - Use historical records if available
 - If exact {year} unavailable, use closest decade
 - Do NOT use modern popular names for old years
- 
+
 ═══════════════════════════════════════════════════════
 FINAL CHECKLIST BEFORE SUBMITTING
 ═══════════════════════════════════════════════════════
- 
+
 MANDATORY SELF-VERIFICATION - DO NOT SKIP:
- 
+
 1. CELEBRITY BIRTHDATE VERIFICATION:
    □ Celebrity1: Born on {month_name} {day}? (Check: NOT {month_name} {day-1} or {day+1})
    □ Celebrity2: Born on {month_name} {day}? (Different person from Celebrity1?)
    □ Celebrity3: Born on {month_name} {day}? (Different from 1 and 2?)
    □ All 3 celebrities are REAL, verifiable people?
    □ Format: "Name - Description" (NO birth year included)?
- 
+
 2. STAR SIGN ACCURACY:
    □ Does the star sign match {month_name} {day}?
    □ Common mistakes to avoid:
@@ -1179,7 +1180,7 @@ MANDATORY SELF-VERIFICATION - DO NOT SKIP:
      - Capricorn: December 22-January 19
      - Aquarius: January 20-February 18
      - Pisces: February 19-March 20
- 
+
 3. HISTORICAL EVENTS DATE VERIFICATION:
    □ Event1: Happened on {month_name} {day} in 1800s?
    □ Event2: Happened on {month_name} {day} in early 1900s?
@@ -1188,11 +1189,11 @@ MANDATORY SELF-VERIFICATION - DO NOT SKIP:
    □ All events are 20-30 words (full sentences)?
    □ Each event is from a DIFFERENT era?
    □ BIRTHDAY BIAS CHECK: Have I verified each event date is the REAL date, NOT shifted to match the birth day number ({day})? (e.g. if birth day is {day}, confirm each event did not actually happen on a different day that I have wrongly moved to {day})
- 
+
 10. BOOK AND TV SHOW VERIFICATION:
    □ TopBook was published in {year} or at most 1 year prior — NOT after {year}?
    □ TVShow was on air before or during {year} — NOT a show that premiered after {year}?
- 
+
 4. AUSTRALIAN CURRENCY VERIFICATION:
    □ ALL prices in Australian dollars ($) or cents (c)?
    □ NO British pounds (£), shillings (s), or pence (d)?
@@ -1202,31 +1203,31 @@ MANDATORY SELF-VERIFICATION - DO NOT SKIP:
      - 1940s salary: $300-500 (NOT $3,000)
      - 1960s house: $5,000-10,000 (NOT $50,000)
      - 1980s salary: $10,000-20,000 (NOT $100,000)
- 
+
 5. SPORTS WINNERS VERIFICATION:
    □ NRL/AFL winner is actual {year} winner? (NOT the year before or after)
    □ Australian Open winners are {year} champions?
    □ Bathurst 1000 winner is {year} race winner specifically (NOT a nearby year)? Correct driver PAIRING/trio for that exact year (co-drivers change yearly - verify, don't assume)?
    □ Best Actor/Actress won for {year} films?
- 
+
 6. YEAR FORMAT VERIFICATION:
    □ Year is 4 digits? (e.g., "1943" NOT "43")
    □ All HistoricalEventDate fields are 4-digit years?
- 
+
 7. NEWS EVENTS VERIFICATION:
    □ NewsEvent1: Actually happened on {month_name} {day}?
    □ NewsEvent2: Actually happened on {month_name} {day}?
    □ NewsEvent3: Actually happened on {month_name} {day}?
    □ All news events are from the correct DATE (even if different years)?
    □ Each NewsEvent is MAX 15 WORDS (one short sentence, not multiple clauses)?
- 
+
 8. DESCRIPTION LENGTH VERIFICATION:
    □ TopBookDescription is MAX 15-20 WORDS?
    □ TVShowDescription is MAX 15-20 WORDS?
    □ FashionDescription is MAX 15-20 WORDS?
    □ TechnologyDescription is MAX 15-20 WORDS?
    □ BirthsDescription is MAX 15-20 WORDS?
- 
+
 9. FINAL ACCURACY CHECK:
    Ask yourself for EACH field:
    - "Am I 100% CERTAIN this is correct?"
@@ -1235,22 +1236,22 @@ MANDATORY SELF-VERIFICATION - DO NOT SKIP:
    
    If ANY answer is "no" or "I'm not sure" → DO NOT include that data!
    Better to leave it blank than to be wrong!
- 
+
 ═══════════════════════════════════════════════════════
 CRITICAL REMINDERS
 ═══════════════════════════════════════════════════════
- 
+
 ⚠️ WRONG CELEBRITY BIRTHDATES ARE THE #1 ERROR
 ⚠️ WRONG HISTORICAL EVENT DATES ARE THE #2 ERROR  
 ⚠️ BRITISH CURRENCY IN PRICES IS THE #3 ERROR
 ⚠️ 2-DIGIT YEARS INSTEAD OF 4-DIGIT IS THE #4 ERROR
 ⚠️ BIRTHDAY BIAS (SHIFTING EVENT DATES TO MATCH BIRTH DAY) IS THE #5 ERROR
 ⚠️ BOOK OR TV SHOW FROM WRONG YEAR (PUBLISHED/AIRED AFTER BIRTH DATE) IS THE #6 ERROR
- 
+
 TRIPLE-CHECK these four things above ALL else!
- 
+
 Return ONLY the JSON object. Start with {{ and end with }}."""
- 
+
     url = "https://api.anthropic.com/v1/messages"
     headers = {
         "x-api-key": api_key,
@@ -1303,11 +1304,11 @@ Return ONLY the JSON object. Start with {{ and end with }}."""
         if progress_callback:
             progress_callback(f"❌ Error: {str(e)}")
         return {}
- 
+
 # ============================================================================
 # ORDER PROCESSING
 # ============================================================================
- 
+
 def process_order(order: Dict, claude_api_key: str, item_index: int = 0, progress_callback=None) -> Optional[Dict]:
     """Process a single order line item and return complete data
     
@@ -1418,7 +1419,7 @@ def process_order(order: Dict, claude_api_key: str, item_index: int = 0, progres
         progress_callback(f"✅ {display_order} processed successfully")
     
     return complete_data
- 
+
 def generate_csv_filename(settings: dict) -> str:
     """Generate CSV filename based on settings"""
     template = settings.get('filename_format', 'orders_{date}_{time}')
@@ -1431,7 +1432,7 @@ def generate_csv_filename(settings: dict) -> str:
         filename += '.csv'
     
     return filename
- 
+
 def save_csv(data: List[Dict], settings: dict) -> str:
     """Save processed data to CSV"""
     df = pd.DataFrame(data)
@@ -1443,11 +1444,11 @@ def save_csv(data: List[Dict], settings: dict) -> str:
     df.to_csv(filepath, index=False)
     
     return filepath
- 
+
 # ============================================================================
 # MAIN DASHBOARD
 # ============================================================================
- 
+
 def main():
     """Main dashboard application"""
     
@@ -1952,6 +1953,9 @@ def main():
                             # Preview
                             with st.expander("👁️ Preview Data"):
                                 st.dataframe(df.head(10))
+                            
+                            # Print PNGs (transparent, ready for Officeworks)
+                            render_png_section(st.session_state.processed_orders)
                         
                         except Exception as e:
                             st.error(f"Error saving CSV: {e}")
@@ -2011,20 +2015,19 @@ def main():
         
         else:
             st.success("No errors! 🎉")
- 
+
 # ============================================================================
 # ENTRY POINT
 # ============================================================================
- 
+
 if __name__ == "__main__":
     main()
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
+
+
+
+
+
+
+
+
+
