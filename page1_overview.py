@@ -361,7 +361,7 @@ def render_page1(order, output_path):
     # Population boxes: rounded squares with icon + bold value inside.
     # Both boxes share ONE font size (sized to fit the wider value) so
     # World and Australia always match.
-    pb_y1 = CONTENT_BOTTOM
+    pb_y1 = CONTENT_BOTTOM - 45
     pb_y0 = pb_y1 - 360
 
     def normalize_pop(v):
@@ -371,8 +371,8 @@ def render_page1(order, output_path):
         return v
 
     pop_boxes = [
-        (920, 1295, "world_population.png", normalize_pop(order.get("WorldPopulation", ""))),
-        (1400, 1775, "australia_population.png", normalize_pop(order.get("AustraliaPopulation", ""))),
+        (870, 1245, "world_population.png", normalize_pop(order.get("WorldPopulation", ""))),
+        (1295, 1670, "australia_population.png", normalize_pop(order.get("AustraliaPopulation", ""))),
     ]
     # find the largest size (<=48) at which BOTH values fit their box width
     box_inner = min(bx1 - bx0 - 30 for bx0, bx1, _, _ in pop_boxes)
