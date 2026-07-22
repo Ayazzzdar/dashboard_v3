@@ -283,9 +283,22 @@ def render_page1(order, output_path):
     box_inner_h = (NB_B - NB_T) - pad * 2
     top_offset = pad + max(0, (box_inner_h - block_h) / 2)
     ty = NB_T + top_offset + f.getmetrics()[0]
+    text_w = NB_R - NB_L - pad * 2
     for wl in wrapped:
-        for line in wl:
-            tl(draw, line, f, NB_L + pad, ty)
+        for li, line in enumerate(wl):
+            is_last = (li == len(wl) - 1)
+            if is_last or " " not in line:
+                tl(draw, line, f, NB_L + pad, ty)
+            else:
+                # full justification: distribute extra space between words
+                words = line.split(" ")
+                widths = [draw.textlength(wd, font=f) for wd in words]
+                extra = text_w - sum(widths)
+                sp = extra / (len(words) - 1) if len(words) > 1 else 0
+                wx = NB_L + pad
+                for wd, ww in zip(words, widths):
+                    draw.text((wx, ty), wd, font=f, fill=INK, anchor="ls")
+                    wx += ww + sp
             ty += lh
         ty += gap
 
