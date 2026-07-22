@@ -19,7 +19,7 @@ PLAYFAIR = f"{FONT_DIR}/PlayfairDisplay-Regular.ttf"
 CORMORANT = f"{FONT_DIR}/CormorantGaramond-Variable.ttf"
 
 # Brand colors
-INK = (26, 26, 26, 255)
+INK = (0, 0, 0, 255)
 NAVY = (30, 58, 138, 255)  # kept for other elements; dividers now use INK
 
 # Layout margins (px, relative to 2480x3508 canvas)
@@ -31,6 +31,22 @@ YEAR_COL_WIDTH = 480
 DIVIDER_X = MARGIN_X + YEAR_COL_WIDTH + 40
 TEXT_COL_X = DIVIDER_X + 60
 TEXT_COL_WIDTH = CANVAS_W - MARGIN_X - TEXT_COL_X
+
+
+_BORDER_CACHE = None
+
+
+def _get_border():
+    """Load and resize the border once, then reuse it for every page.
+    Re-decoding + LANCZOS-resizing a full-page RGBA image on every render
+    was the main source of peak memory on large batches."""
+    global _BORDER_CACHE
+    if _BORDER_CACHE is None:
+        _p = _os.path.join(_os.path.dirname(_os.path.abspath(__file__)),
+                           "assets", "border.png")
+        _BORDER_CACHE = Image.open(_p).convert("RGBA").resize(
+            (CANVAS_W, CANVAS_H), Image.LANCZOS)
+    return _BORDER_CACHE
 
 
 def set_variation(font, style_name):
@@ -148,10 +164,7 @@ def render_page2(order, output_path):
             cy += line_h
 
     # ---- Composite border on top ----
-    border = Image.open(_os.path.join(_os.path.dirname(_os.path.abspath(__file__)), "assets", "border.png")).convert("RGBA").resize(
-        (CANVAS_W, CANVAS_H), Image.LANCZOS
-    )
-    canvas = Image.alpha_composite(canvas, border)
+    canvas.alpha_composite(_get_border())
 
     canvas.save(output_path)
     return output_path
