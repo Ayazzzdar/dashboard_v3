@@ -17,7 +17,7 @@ PLAYFAIR_IT = f"{FONT_DIR}/PlayfairDisplay-Italic.ttf"
 LIBRE_BASK = f"{FONT_DIR}/LibreBaskerville-Variable.ttf"
 LIBRE_BASK_IT = f"{FONT_DIR}/LibreBaskerville-Italic-Variable.ttf"
 
-INK = (26, 26, 26, 255)
+INK = (0, 0, 0, 255)
 NAVY = (29, 111, 196, 255)   # #1d6fc4
 WHITE = (255, 255, 255, 255)
 
@@ -33,9 +33,6 @@ RBOX_T, RBOX_B = 1600, 3230
 CIRCLE_CX = (RBOX_L + RBOX_R) // 2
 CIRCLE_R = 400
 CIRCLE_CY = RULE_Y + 45 + CIRCLE_R   # top of circle ~45px below rule
-
-_ICON_CACHE = {}
-
 
 def F(size, style=None, italic=False):
     f = ImageFont.truetype(PLAYFAIR_IT if italic else PLAYFAIR, size)
@@ -56,28 +53,73 @@ def LB(size, style=None, italic=False):
     return f
 
 
-def load_icon(name):
-    if name in _ICON_CACHE:
-        return _ICON_CACHE[name]
-    im = Image.open(_os.path.join(_os.path.dirname(_os.path.abspath(__file__)), "assets", "icons", name)).convert("RGBA")
+_BORDER_CACHE = None
+
+
+def _get_border():
+    """Load and resize the border once, then reuse it for every page.
+    Re-decoding + LANCZOS-resizing a full-page RGBA image on every render
+    was a major source of peak memory on large batches."""
+    global _BORDER_CACHE
+    if _BORDER_CACHE is None:
+        _p = _os.path.join(_os.path.dirname(_os.path.abspath(__file__)),
+                           "assets", "border.png")
+        _BORDER_CACHE = Image.open(_p).convert("RGBA").resize(
+            (CANVAS_W, CANVAS_H), Image.LANCZOS)
+    return _BORDER_CACHE
+
+
+_ICON_CACHE = {}       # (name, w, h) -> resized RGBA icon
+_ICON_SIZE_CACHE = {}  # name -> (w, h) of the alpha-cropped source
+
+
+def _icon_path(name):
+    return _os.path.join(_os.path.dirname(_os.path.abspath(__file__)),
+                         "assets", "icons", name)
+
+
+def _load_icon_source(name):
+    """Decode + alpha-crop an icon. Deliberately NOT cached: the source
+    files are ~3000px (~30 MB each in RAM). We only cache the small
+    resized versions actually drawn, which keeps peak memory low on
+    large batches while producing identical output."""
+    im = Image.open(_icon_path(name)).convert("RGBA")
     bbox = im.getchannel("A").getbbox()
     if bbox:
         im = im.crop(bbox)
-    _ICON_CACHE[name] = im
     return im
 
 
+def _icon_size(name):
+    """Cropped source dimensions (cached), without holding the pixels."""
+    if name not in _ICON_SIZE_CACHE:
+        src = _load_icon_source(name)
+        _ICON_SIZE_CACHE[name] = src.size
+        src.close()
+    return _ICON_SIZE_CACHE[name]
+
+
+def load_icon(name):
+    """Compatibility shim - returns the alpha-cropped source image."""
+    return _load_icon_source(name)
+
+
 def paste_icon(canvas, name, cx, cy, w=None, h=None):
-    im = load_icon(name)
-    iw, ih = im.size
+    iw, ih = _icon_size(name)
     if w and not h:
         h = max(1, int(ih * w / iw))
     elif h and not w:
         w = max(1, int(iw * h / ih))
-    im = im.resize((int(w), int(h)), Image.LANCZOS)
+    w, h = int(w), int(h)
+    key = (name, w, h)
+    im = _ICON_CACHE.get(key)
+    if im is None:
+        src = _load_icon_source(name)
+        im = src.resize((w, h), Image.LANCZOS)
+        src.close()
+        _ICON_CACHE[key] = im
     canvas.alpha_composite(im, (int(cx - w / 2), int(cy - h / 2)))
-
-
+    return w, h
 def tc(draw, text, font, cx, baseline, fill=INK):
     draw.text((cx, baseline), text, font=font, fill=fill, anchor="ms")
 
@@ -196,8 +238,7 @@ def render_page3(order, output_path):
         tc(draw, str(val), pval_f, rc, sy0 + slot * 0.85)
 
     # ---- border overlay ----
-    border = Image.open(_os.path.join(_os.path.dirname(_os.path.abspath(__file__)), "assets", "border.png")).convert("RGBA").resize((CANVAS_W, CANVAS_H), Image.LANCZOS)
-    canvas = Image.alpha_composite(canvas, border)
+    canvas.alpha_composite(_get_border())
     canvas.save(output_path)
     return output_path
 
