@@ -180,11 +180,21 @@ def render_page4(order, output_path):
         header_bl = cy - 90
         tl(draw, header, header_f, TEXT_X, header_bl)
 
-        # italic name - shrink if too wide for the column
+        # italic name - shrink to fit; if a long sentence still can't fit on
+        # one line, wrap to two lines. Text must NEVER cross the border.
         nsize = 62
-        while nsize > 40 and draw.textlength(name, font=LB(nsize, italic=True)) > text_w:
+        while nsize > 34 and draw.textlength(name, font=LB(nsize, italic=True)) > text_w:
             nsize -= 2
-        tl(draw, name, LB(nsize, italic=True), TEXT_X, header_bl + 92)
+        nf = LB(nsize, italic=True)
+        name_extra = 0
+        if draw.textlength(name, font=nf) <= text_w:
+            tl(draw, name, nf, TEXT_X, header_bl + 92)
+        else:
+            nlines = _wrap_text(draw, name, nf, text_w)[:2]
+            npitch = int(nsize * 1.25)
+            for nli, nline in enumerate(nlines):
+                tl(draw, nline, nf, TEXT_X, header_bl + 92 + nli * npitch)
+            name_extra = (len(nlines) - 1) * npitch
 
         # description: wrapped, auto-shrink so it stays within the row
         dsize = 40
@@ -197,7 +207,7 @@ def render_page4(order, output_path):
         df = LB(dsize)
         lines = _wrap_text(draw, desc, df, text_w)
         line_pitch = int(dsize * 1.55)
-        dy = header_bl + 92 + 108
+        dy = header_bl + 92 + 108 + name_extra
         for li, line in enumerate(lines):
             is_last = (li == len(lines) - 1)
             if is_last or " " not in line:
