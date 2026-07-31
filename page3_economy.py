@@ -128,6 +128,13 @@ def tl(draw, text, font, x, baseline, fill=INK):
     draw.text((x, baseline), text, font=font, fill=fill, anchor="ls")
 
 
+def _strip_point_zero(v):
+    """Remove a trailing .0 from whole-number values: "36.0%" -> "36%",
+    "5.0c" -> "5c". Leaves real decimals ("5.4c", "-12.6%", "$2.10") alone."""
+    import re
+    return re.sub(r"(\d+)\.0(?=\D|$)", r"\1", str(v).strip())
+
+
 def fmt_money(s):
     import re
     m = re.match(r"^\$?\s*([\d,]+)$", str(s).strip())
@@ -174,13 +181,13 @@ def render_page3(order, output_path):
     petrol_cy = RBOX_T + petrol_h // 2
     paste_icon(canvas, "petrol.png", LCOL_L + 185, petrol_cy, h=petrol_h)
     tl(draw, "PETROL (PER LITRE)", LB(68), LCOL_L + 440, petrol_cy - 55)
-    tl(draw, order.get("PetrolPrice", ""), LB(100, "Bold"), LCOL_L + 440, petrol_cy + 92)
+    tl(draw, _strip_point_zero(order.get("PetrolPrice", "")), LB(100, "Bold"), LCOL_L + 440, petrol_cy + 92)
 
     # INFLATION
     inflation_cy = petrol_cy + 500
     paste_icon(canvas, "inflation.png", LCOL_L + 185, inflation_cy, h=340)
     tl(draw, "INFLATION RATE", LB(68), LCOL_L + 440, inflation_cy - 55)
-    tl(draw, order.get("InflationRate", ""), LB(100, "Bold"), LCOL_L + 440, inflation_cy + 92)
+    tl(draw, _strip_point_zero(order.get("InflationRate", "")), LB(100, "Bold"), LCOL_L + 440, inflation_cy + 92)
 
     # STAMP + CINEMA: labels stacked, close to icons,
     # bottom label line aligned with price box bottom
