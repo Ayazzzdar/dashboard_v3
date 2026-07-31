@@ -17,7 +17,7 @@ from settings_manager_v2 import (
     save_settings, load_settings, export_settings, 
     import_settings, reset_settings, get_color_presets, DEFAULT_SETTINGS
 )
-from lookup_tables import resolve_lookup_fields
+from lookup_tables import resolve_lookup_fields, get_number1_song_fallback
 from png_export import render_png_section
 
 # Page configuration
@@ -1414,6 +1414,28 @@ def process_order(order: Dict, claude_api_key: str, item_index: int = 0, progres
     
     if progress_callback and fields_overridden:
         progress_callback(f"✅ Verified from lookup tables: {', '.join(fields_overridden)}")
+    
+    # ------------------------------------------------------------------
+    # NUMBER 1 SONG FALLBACK
+    # The LLM tries first to find a song close to the birth date.
+    # If it returns blank, 'unknown', or a clearly invalid response,
+    # fall back to the verified yearly #1 from the lookup table.
+    # For 2026+ (current/future years), always use the lookup table
+    # since no full-year chart data exists yet.
+    # ------------------------------------------------------------------
+    current_song = complete_data.get('Number1Song', '')
+    song_is_unknown = (
+        not current_song or
+        str(current_song).strip().lower() in ['unknown', 'n/a', 'not available', 'not found', ''] or
+        'unknown' in str(current_song).lower() or
+        year >= 2026
+    )
+    if song_is_unknown:
+        fallback_song = get_number1_song_fallback(year)
+        if fallback_song:
+            complete_data['Number1Song'] = fallback_song
+            if progress_callback:
+                progress_callback(f"🎵 Number1Song fallback used: {fallback_song}")
     
     if progress_callback:
         progress_callback(f"✅ {display_order} processed successfully")
