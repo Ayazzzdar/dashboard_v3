@@ -78,6 +78,9 @@ _BATHURST_TABLE = _load_year_table("bathurst_winners.csv")
 _AUSOPEN_TABLE = _load_year_table("ausopen_winners.csv")
 _OSCAR_TABLE = _load_year_table("oscar_winners.csv")
 _SALARY_TABLE = _load_year_table("average_salary.csv")
+_SONG_TABLE = _load_year_table("number1_songs.csv")
+_PETROL_TABLE = _load_year_table("petrol_prices.csv")
+_INFLATION_TABLE = _load_year_table("inflation_rates.csv")
 _PM_TABLE = _load_date_range_table("pm_terms.csv")
 _MONARCH_TABLE = _load_date_range_table("monarchs.csv")
 
@@ -232,6 +235,27 @@ def get_monarch(day: int, month: int, year: int) -> Optional[str]:
     return row.get('name', '').strip() or None
 
 
+def get_number1_song_fallback(year: int) -> Optional[str]:
+    """Return the yearly #1 song as a FALLBACK only — used when the LLM
+    returns 'unknown', blank, or an invalid response for Number1Song.
+    Also used as the definitive answer for 2026 (current year, no full
+    year data yet) and any future year.
+    
+    NOT used to override the LLM for historical years — the LLM tries
+    first to find a song close to the birth date. This table only kicks
+    in when the LLM fails or the year is 2026+.
+    """
+    row = _SONG_TABLE.get(year)
+    if not row:
+        # For any year beyond our table, return the latest known #1
+        latest_year = max(_SONG_TABLE.keys()) if _SONG_TABLE else None
+        if latest_year:
+            row = _SONG_TABLE.get(latest_year)
+    if not row:
+        return None
+    return row.get('number1_song', '').strip() or None
+
+
 def get_average_salary(year: int) -> Optional[str]:
     """Return the verified average annual salary for a given year in AUD,
     or None if the year isn't in the table (falls back to LLM generation).
@@ -242,6 +266,29 @@ def get_average_salary(year: int) -> Optional[str]:
     if not row:
         return None
     return row.get('average_annual_salary', '').strip() or None
+
+
+def get_petrol_price(year: int) -> Optional[str]:
+    """Return the verified average petrol price for a given year in AUD.
+    1926-2016: official BITRE Information Sheet 82 series.
+    2017-2025: AIP/ACCC annual retail averages.
+    1920-1925: estimated (pre-BITRE series).
+    Returns None if year not in table (falls back to LLM generation)."""
+    row = _PETROL_TABLE.get(year)
+    if not row:
+        return None
+    return row.get('petrol_price', '').strip() or None
+
+
+def get_inflation_rate(year: int) -> Optional[str]:
+    """Return the verified annual inflation rate for a given year.
+    1949-2025: official ABS CPI annual figures.
+    1920-1948: RBA pre-CPI retail price index series (approximate).
+    Returns None if year not in table (falls back to LLM generation)."""
+    row = _INFLATION_TABLE.get(year)
+    if not row:
+        return None
+    return row.get('inflation_rate', '').strip() or None
 
 
 def resolve_lookup_fields(day: int, month: int, year: int) -> Dict[str, Optional[str]]:
@@ -263,4 +310,6 @@ def resolve_lookup_fields(day: int, month: int, year: int) -> Dict[str, Optional
         "IncomingPM": incoming_pm,
         "Monarch": get_monarch(day, month, year),
         "AverageSalary": get_average_salary(year),
+        "PetrolPrice": get_petrol_price(year),
+        "InflationRate": get_inflation_rate(year),
     }
