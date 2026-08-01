@@ -131,6 +131,15 @@ def render_page4(order, output_path):
     draw = ImageDraw.Draw(canvas)
     year = str(order.get("Year", ""))
 
+    # Australian television launched September 1956. For 1955 and earlier
+    # the pack shows a radio program in the TVShow field, so the header
+    # reads "RADIO HIGHLIGHTS" instead of "TV HIGHLIGHTS" to match.
+    try:
+        year_int = int(str(order.get("Year", "")).strip())
+    except (ValueError, TypeError):
+        year_int = None
+    tv_header = "RADIO HIGHLIGHTS" if (year_int is not None and year_int <= 1955) else "TV HIGHLIGHTS"
+
     # ---- Title: Regular Playfair sized so line 2 spans ~1214px ----
     tsize = 150
     while tsize < 230:
@@ -155,7 +164,7 @@ def render_page4(order, output_path):
     rows = [
         ("TOP SELLING BOOK", order.get("TopBook", ""), order.get("TopBookDescription", ""),
          "book.png", 400),
-        ("TV HIGHLIGHTS", order.get("TVShow", ""), order.get("TVShowDescription", ""),
+        (tv_header, order.get("TVShow", ""), order.get("TVShowDescription", ""),
          "tv.png", 330),
         ("FASHION TREND", order.get("FashionTrend", ""), order.get("FashionDescription", ""),
          "clothing.png", 400),
