@@ -81,6 +81,12 @@ _SALARY_TABLE = _load_year_table("average_salary.csv")
 _SONG_TABLE = _load_year_table("number1_songs.csv")
 _PETROL_TABLE = _load_year_table("petrol_prices.csv")
 _INFLATION_TABLE = _load_year_table("inflation_rates.csv")
+_AUS_POP_TABLE = _load_year_table("aus_population.csv")
+_WORLD_POP_TABLE = _load_year_table("world_population.csv")
+_STAMP_TABLE = _load_year_table("stamp_prices.csv")
+_BABY_NAMES_TABLE = _load_year_table("baby_names.csv")
+_BIRTHS_TABLE = _load_year_table("aus_births.csv")
+_HOUSE_TABLE = _load_year_table("average_house.csv")
 _PM_TABLE = _load_date_range_table("pm_terms.csv")
 _MONARCH_TABLE = _load_date_range_table("monarchs.csv")
 
@@ -291,6 +297,90 @@ def get_inflation_rate(year: int) -> Optional[str]:
     return row.get('inflation_rate', '').strip() or None
 
 
+def get_aus_population(year: int) -> Optional[str]:
+    """Return verified Australian population for a year, or None if the
+    year isn't in the table (falls back to LLM generation).
+    Source: ABS historical population + Census + ERP; UN midyear estimates."""
+    row = _AUS_POP_TABLE.get(year)
+    if not row:
+        return None
+    return row.get('aus_population', '').strip() or None
+
+
+def get_world_population(year: int) -> Optional[str]:
+    """Return verified world population for a year, or None if the year
+    isn't in the table (falls back to LLM generation).
+    Source: UN World Population Prospects + US Census Bureau historical."""
+    row = _WORLD_POP_TABLE.get(year)
+    if not row:
+        return None
+    return row.get('world_population', '').strip() or None
+
+
+def get_stamp_price(year: int) -> Optional[str]:
+    """Return the verified basic domestic letter postage rate in effect
+    during a year, or None if not in table (falls back to LLM generation).
+    Source: Australia Post basic postage rate history (Wikipedia/Stampboards)."""
+    row = _STAMP_TABLE.get(year)
+    if not row:
+        return None
+    return row.get('stamp_price', '').strip() or None
+
+
+def get_boy_name(year: int, rank: int) -> Optional[str]:
+    """Return the verified NSW-registry top-10 boys' name at a given rank
+    (1-10) for a year, or None if the year isn't in the table or the cell
+    is blank (falls back to LLM generation).
+    Source: NSW Registry of Births, Deaths & Marriages, official
+    'Popular Baby Names 1952-2025' dataset (Data.NSW). Covers 1952-2025;
+    2026 carries forward the most-recent (2025) list. Pre-1952 has no
+    official registry data, so those years return None by design."""
+    if rank < 1 or rank > 10:
+        return None
+    row = _BABY_NAMES_TABLE.get(year)
+    if not row:
+        return None
+    return row.get(f'boy{rank}', '').strip() or None
+
+
+def get_girl_name(year: int, rank: int) -> Optional[str]:
+    """Return the verified NSW-registry top-10 girls' name at a given rank
+    (1-10) for a year, or None if the year isn't in the table or the cell
+    is blank (falls back to LLM generation).
+    Source: NSW Registry of Births, Deaths & Marriages, official
+    'Popular Baby Names 1952-2025' dataset (Data.NSW). Covers 1952-2025;
+    2026 carries forward the most-recent (2025) list. Pre-1952 has no
+    official registry data, so those years return None by design."""
+    if rank < 1 or rank > 10:
+        return None
+    row = _BABY_NAMES_TABLE.get(year)
+    if not row:
+        return None
+    return row.get(f'girl{rank}', '').strip() or None
+
+
+def get_australia_births(year: int) -> Optional[str]:
+    """Return the verified/estimated Australian total births for a year, or
+    None if the year isn't in the table (falls back to LLM generation).
+    Source: ABS Births, Australia (cat. 3301.0) registered births; pre-1924
+    and 2025+ rows are estimates/carry-forward as flagged in the CSV."""
+    row = _BIRTHS_TABLE.get(year)
+    if not row:
+        return None
+    return row.get('aus_births', '').strip() or None
+
+
+def get_average_house(year: int) -> Optional[str]:
+    """Return the average Australian house price for a year in AUD, or None
+    if the year isn't in the table (falls back to LLM generation).
+    Source: ABS RPPI / Abelson & Chung national estimates (post-1970 solid);
+    pre-1970 rows are flagged estimates in the CSV, per limited national data."""
+    row = _HOUSE_TABLE.get(year)
+    if not row:
+        return None
+    return row.get('average_house', '').strip() or None
+
+
 def resolve_lookup_fields(day: int, month: int, year: int) -> Dict[str, Optional[str]]:
     """Master resolver - call this once per order to get every lookup-
     table-backed field in one go. Returns a dict where any field that
@@ -312,4 +402,29 @@ def resolve_lookup_fields(day: int, month: int, year: int) -> Dict[str, Optional
         "AverageSalary": get_average_salary(year),
         "PetrolPrice": get_petrol_price(year),
         "InflationRate": get_inflation_rate(year),
+        "AustraliaPopulation": get_aus_population(year),
+        "WorldPopulation": get_world_population(year),
+        "StampPrice": get_stamp_price(year),
+        "BoyName1": get_boy_name(year, 1),
+        "BoyName2": get_boy_name(year, 2),
+        "BoyName3": get_boy_name(year, 3),
+        "BoyName4": get_boy_name(year, 4),
+        "BoyName5": get_boy_name(year, 5),
+        "BoyName6": get_boy_name(year, 6),
+        "BoyName7": get_boy_name(year, 7),
+        "BoyName8": get_boy_name(year, 8),
+        "BoyName9": get_boy_name(year, 9),
+        "BoyName10": get_boy_name(year, 10),
+        "GirlName1": get_girl_name(year, 1),
+        "GirlName2": get_girl_name(year, 2),
+        "GirlName3": get_girl_name(year, 3),
+        "GirlName4": get_girl_name(year, 4),
+        "GirlName5": get_girl_name(year, 5),
+        "GirlName6": get_girl_name(year, 6),
+        "GirlName7": get_girl_name(year, 7),
+        "GirlName8": get_girl_name(year, 8),
+        "GirlName9": get_girl_name(year, 9),
+        "GirlName10": get_girl_name(year, 10),
+        "AustraliaBirths": get_australia_births(year),
+        "AverageHouse": get_average_house(year),
     }
