@@ -1,0 +1,367 @@
+month,day,celebrity1,celebrity2,celebrity3
+1,1,J.D. Salinger - American novelist,Paul Revere - American patriot,Verne Troyer - American actor
+1,2,Isaac Asimov - American author,Cuba Gooding Jr. - American actor,Christy Turlington - American model
+1,3,J.R.R. Tolkien - English author,Mel Gibson - American actor,Michael Schumacher - German racing driver
+1,4,Isaac Newton - English physicist,Louis Braille - French educator,Michael Stipe - American singer
+1,5,Diane Keaton - American actress,Bradley Cooper - American actor,Robert Duvall - American actor
+1,6,Rowan Atkinson - British comedian,Eddie Redmayne - English actor,Kate McKinnon - American comedian
+1,7,Nicolas Cage - American actor,Lewis Hamilton - British racing driver,Jeremy Renner - American actor
+1,8,Elvis Presley - American singer,David Bowie - English musician,Stephen Hawking - English physicist
+1,9,Catherine Middleton - Princess of Wales,Jimmy Page - English guitarist,Joan Baez - American singer
+1,10,Rod Stewart - British singer,George Foreman - American boxer,Pat Benatar - American singer
+1,11,Alexander Hamilton - American statesman,Mary J. Blige - American singer,Amanda Peet - American actress
+1,12,Jeff Bezos - American entrepreneur,Zayn Malik - English singer,Haruki Murakami - Japanese novelist
+1,13,Orlando Bloom - English actor,Liam Hemsworth - Australian actor,Julia Louis-Dreyfus - American actress
+1,14,Dave Grohl - American musician,Faye Dunaway - American actress,LL Cool J - American rapper
+1,15,Martin Luther King Jr. - American activist,Pitbull - American rapper,Regina King - American actress
+1,16,Kate Moss - English model,Lin-Manuel Miranda - American composer,Sade Adu - British singer
+1,17,Muhammad Ali - American boxer,Michelle Obama - American lawyer,Jim Carrey - Canadian actor
+1,18,Kevin Costner - American actor,A.A. Milne - English author,Cary Grant - English actor
+1,19,Edgar Allan Poe - American writer,Dolly Parton - American singer,Janis Joplin - American singer
+1,20,Buzz Aldrin - American astronaut,David Lynch - American filmmaker,Federico Fellini - Italian director
+1,21,Christian Dior - French designer,Geena Davis - American actress,Hakeem Olajuwon - American basketball player
+1,22,Lord Byron - English poet,Diane Lane - American actress,Steve Perry - American singer
+1,23,John Hancock - American statesman,Django Reinhardt - Belgian guitarist,Mariska Hargitay - American actress
+1,24,Neil Diamond - American singer,John Belushi - American comedian,Mary Lou Retton - American gymnast
+1,25,Robert Burns - Scottish poet,Virginia Woolf - English writer,Alicia Keys - American singer
+1,26,Wayne Gretzky - Canadian hockey player,Ellen DeGeneres - American comedian,Paul Newman - American actor
+1,27,Wolfgang Amadeus Mozart - Austrian composer,Lewis Carroll - English author,Mikhail Baryshnikov - Russian dancer
+1,28,Jackson Pollock - American painter,Elijah Wood - American actor,Alan Alda - American actor
+1,29,Oprah Winfrey - American host,Tom Selleck - American actor,Anton Chekhov - Russian writer
+1,30,Franklin D. Roosevelt - American president,Gene Hackman - American actor,Christian Bale - British actor
+1,31,Justin Timberlake - American singer,Jackie Robinson - American baseball player,Franz Schubert - Austrian composer
+2,1,Clark Gable - Film actor,Harry Styles - Pop singer,Ronda Rousey - Mixed martial artist
+2,2,Shakira - Singer songwriter,Christie Brinkley - Fashion model,Farrah Fawcett - Film actress
+2,3,Norman Rockwell - American illustrator,Isla Fisher - Film actress,Nathan Lane - Stage actor
+2,4,Rosa Parks - Civil rights activist,Alice Cooper - Rock musician,Charles Lindbergh - Aviation pioneer
+2,5,Cristiano Ronaldo - Football player,Hank Aaron - Baseball player,Neymar - Football player
+2,6,Bob Marley - Reggae musician,Babe Ruth - Baseball player,Axl Rose - Rock singer
+2,7,Charles Dickens - English novelist,Chris Rock - Comedian actor,Garth Brooks - Country singer
+2,8,James Dean - Film actor,John Williams - Film composer,John Grisham - Novelist author
+2,9,Carole King - Singer songwriter,Michael B. Jordan - Film actor,Joe Pesci - Film actor
+2,10,Roberta Flack - Soul singer,Elizabeth Banks - Film actress,Mark Spitz - Olympic swimmer
+2,11,Thomas Edison - American inventor,Jennifer Aniston - Film actress,Burt Reynolds - Film actor
+2,12,Abraham Lincoln - US president,Charles Darwin - English naturalist,Josh Brolin - Film actor
+2,13,Peter Gabriel - Rock musician,Kim Novak - Film actress,Robbie Williams - Pop singer
+2,14,Frederick Douglass - Social reformer,Simon Pegg - Comedic actor,Gregory Hines - Tap dancer
+2,15,Galileo Galilei - Italian astronomer,Susan B. Anthony - Suffrage activist,Chris Farley - Comedic actor
+2,16,The Weeknd - Pop singer,Mahershala Ali - Film actor,John McEnroe - Tennis player
+2,17,Michael Jordan - Basketball player,Ed Sheeran - Singer songwriter,Paris Hilton - Media personality
+2,18,John Travolta - Film actor,Dr. Dre - Rap producer,Molly Ringwald - Film actress
+2,19,Nicolaus Copernicus - Renaissance astronomer,Smokey Robinson - Soul singer,Millie Bobby Brown - Film actress
+2,20,Rihanna - Pop singer,Kurt Cobain - Rock musician,Cindy Crawford - Fashion model
+2,21,Nina Simone - Jazz singer,Jordan Peele - Comedian director,Kelsey Grammer - Television actor
+2,22,George Washington - US president,Drew Barrymore - Film actress,Steve Irwin - Wildlife conservationist
+2,23,George Frideric Handel - Baroque composer,Emily Blunt - Film actress,Dakota Fanning - Film actress
+2,24,Steve Jobs - Tech entrepreneur,Floyd Mayweather Jr. - Professional boxer,Wilhelm Grimm - German author
+2,25,George Harrison - Beatles guitarist,Pierre-Auguste Renoir - French painter,Enrico Caruso - Operatic tenor
+2,26,Victor Hugo - French novelist,Johnny Cash - Country singer,Erykah Badu - Soul singer
+2,27,Elizabeth Taylor - Film actress,John Steinbeck - American novelist,Josh Groban - Singer songwriter
+2,28,Linus Pauling - Nobel chemist,Mario Andretti - Racing driver,Bernadette Peters - Broadway actress
+2,29,Gioachino Rossini - Opera composer,Tony Robbins - Motivational speaker,Ja Rule - Rap artist
+3,1,Justin Bieber - Pop singer,Ron Howard - Film director,Lupita Nyong'o - Film actress
+3,2,Jon Bon Jovi - Rock singer,Daniel Craig - Film actor,Dr. Seuss - Children's author
+3,3,Alexander Graham Bell - Telephone inventor,Jessica Biel - Film actress,Camila Cabello - Pop singer
+3,4,Antonio Vivaldi - Baroque composer,Patricia Heaton - Television actress,Draymond Green - Basketball player
+3,5,Eva Mendes - Film actress,Penn Jillette - Magician entertainer,John Frusciante - Rock guitarist
+3,6,Michelangelo - Renaissance artist,Shaquille O'Neal - Basketball player,David Gilmour - Rock guitarist
+3,7,Bryan Cranston - Television actor,Rachel Weisz - Film actress,Ivan Lendl - Tennis player
+3,8,Freddie Prinze Jr. - Film actor,Aidan Quinn - Film actor,Gary Numan - Electronic musician
+3,9,Bobby Fischer - Chess grandmaster,Juliette Binoche - Film actress,Oscar Isaac - Film actor
+3,10,Chuck Norris - Martial artist,Sharon Stone - Film actress,Carrie Underwood - Country singer
+3,11,Douglas Adams - Science-fiction author,Anthony Davis - Basketball player,Jodie Comer - Television actress
+3,12,Liza Minnelli - Actress singer,James Taylor - Singer songwriter,Jack Kerouac - Beat novelist
+3,13,William H. Macy - Film actor,Common - Rapper actor,Neil Sedaka - Pop singer
+3,14,Albert Einstein - Theoretical physicist,Michael Caine - Film actor,Stephen Curry - Basketball player
+3,15,Eva Longoria - Television actress,Bret Michaels - Rock singer,Mike Love - Rock singer
+3,16,Jerry Lewis - Comedian actor,Lauren Graham - Television actress,Alexandra Daddario - Film actress
+3,17,Kurt Russell - Film actor,Rob Lowe - Television actor,Nat King Cole - Jazz singer
+3,18,Queen Latifah - Rapper actress,Adam Levine - Pop singer,Vanessa Williams - Singer actress
+3,19,Bruce Willis - Film actor,Glenn Close - Film actress,Ursula Andress - Film actress
+3,20,Fred Rogers - Television host,Spike Lee - Film director,Holly Hunter - Film actress
+3,21,Gary Oldman - Film actor,Matthew Broderick - Film actor,Ayrton Senna - Formula One driver
+3,22,Reese Witherspoon - Film actress,William Shatner - Television actor,Andrew Lloyd Webber - Musical composer
+3,23,Keri Russell - Television actress,Chaka Khan - Funk singer,Mo Farah - Long-distance runner
+3,24,Harry Houdini - Escape artist,Jim Parsons - Television actor,Peyton Manning - Football player
+3,25,Elton John - Pop singer,Aretha Franklin - Soul singer,Sarah Jessica Parker - Television actress
+3,26,Diana Ross - Soul singer,Steven Tyler - Rock singer,Keira Knightley - Film actress
+3,27,Mariah Carey - Pop singer,Quentin Tarantino - Film director,Nathan Fillion - Television actor
+3,28,Lady Gaga - Pop singer,Reba McEntire - Country singer,Vince Vaughn - Film actor
+3,29,Lucy Lawless - Television actress,Elle Macpherson - Fashion model,Brendan Gleeson - Film actor
+3,30,Vincent van Gogh - Post-impressionist painter,Eric Clapton - Rock guitarist,Celine Dion - Pop singer
+3,31,Johann Sebastian Bach - Baroque composer,Ewan McGregor - Film actor,Christopher Walken - Film actor
+4,1,Susan Boyle - Pop singer,David Oyelowo - Film actor,Randy Orton - Professional wrestler
+4,2,Pedro Pascal - Film actor,Marvin Gaye - Soul singer,Emile Zola - French novelist
+4,3,Marlon Brando - Film actor,Eddie Murphy - Comedian actor,Doris Day - Actress singer
+4,4,Robert Downey Jr. - Film actor,Maya Angelou - Poet author,Heath Ledger - Film actor
+4,5,Gregory Peck - Film actor,Bette Davis - Film actress,Pharrell Williams - Music producer
+4,6,Paul Rudd - Film actor,Merle Haggard - Country singer,Zach Braff - Actor director
+4,7,Jackie Chan - Action actor,Russell Crowe - Film actor,Billie Holiday - Jazz singer
+4,8,Kofi Annan - UN diplomat,Robin Wright - Film actress,Patricia Arquette - Film actress
+4,9,Kristen Stewart - Film actress,Elle Fanning - Film actress,Marc Jacobs - Fashion designer
+4,10,Omar Sharif - Film actor,Mandy Moore - Singer actress,Joseph Pulitzer - Newspaper publisher
+4,11,Jeremy Clarkson - Television presenter,Joss Stone - Soul singer,Alessandra Ambrosio - Fashion model
+4,12,David Letterman - Talk host,Saoirse Ronan - Film actress,Herbie Hancock - Jazz musician
+4,13,Thomas Jefferson - US president,Al Green - Soul singer,Ron Perlman - Film actor
+4,14,Adrien Brody - Film actor,Sarah Michelle Gellar - Film actress,Loretta Lynn - Country singer
+4,15,Leonardo da Vinci - Renaissance artist,Emma Watson - Film actress,Seth Rogen - Comedian actor
+4,16,Charlie Chaplin - Film actor,Kareem Abdul-Jabbar - Basketball player,Claire Foy - Film actress
+4,17,Jennifer Garner - Film actress,Victoria Beckham - Pop singer,William Holden - Film actor
+4,18,Conan O'Brien - Talk host,David Tennant - Film actor,America Ferrera - Film actress
+4,19,Kate Hudson - Film actress,Maria Sharapova - Tennis player,Tim Curry - Film actor
+4,20,Hans Christian Andersen - Fairytale author,George Takei - Film actor,Luther Vandross - Soul singer
+4,21,Queen Elizabeth II - British monarch,James McAvoy - Film actor,Iggy Pop - Rock singer
+4,22,Jack Nicholson - Film actor,Immanuel Kant - German philosopher,Peter Frampton - Rock musician
+4,23,William Shakespeare - English playwright,John Cena - Wrestler actor,Gigi Hadid - Fashion model
+4,24,Barbra Streisand - Singer actress,Sachin Tendulkar - Cricket batsman,Kelly Clarkson - Pop singer
+4,25,Al Pacino - Film actor,Ella Fitzgerald - Jazz singer,Renee Zellweger - Film actress
+4,26,Channing Tatum - Film actor,Carol Burnett - Comedian actress,Jet Li - Martial artist
+4,27,Ulysses S. Grant - US president,Coretta Scott King - Civil rights activist,Samuel Morse - American inventor
+4,28,Penelope Cruz - Film actress,Harper Lee - Novelist author,Jay Leno - Comedian host
+4,29,Jerry Seinfeld - Comedian actor,Michelle Pfeiffer - Film actress,Andre Agassi - Tennis player
+4,30,Gal Gadot - Film actress,Kirsten Dunst - Film actress,Isiah Thomas - Basketball player
+5,1,Wes Anderson - Film director,Tim McGraw - Country singer,Jamie Dornan - Actor
+5,2,David Beckham - Soccer player,Dwayne Johnson - Actor,Donatella Versace - Fashion designer
+5,3,James Brown - Soul singer,Bing Crosby - Singer,Christina Hendricks - Actress
+5,4,Audrey Hepburn - Actress,Will Arnett - Actor,Rory McIlroy - Golfer
+5,5,Adele - Singer,Henry Cavill - Actor,Michael Palin - Comedian
+5,6,George Clooney - Actor,Sigmund Freud - Psychoanalyst,Willie Mays - Baseball player
+5,7,Pyotr Tchaikovsky - Composer,Johannes Brahms - Composer,Gary Cooper - Actor
+5,8,David Attenborough - Broadcaster,Harry Truman - American president,Enrique Iglesias - Singer
+5,9,Billy Joel - Singer,Candice Bergen - Actress,Rosario Dawson - Actress
+5,10,Fred Astaire - Dancer,Bono - Singer,Kenan Thompson - Comedian
+5,11,Salvador Dalí - Painter,Andrés Iniesta - Soccer player,Sabrina Carpenter - Singer
+5,12,Florence Nightingale - Nurse,Katharine Hepburn - Actress,George Carlin - Comedian
+5,13,Stevie Wonder - Singer,Robert Pattinson - Actor,Stephen Colbert - Comedian
+5,14,George Lucas - Film director,Cate Blanchett - Actress,Mark Zuckerberg - Entrepreneur
+5,15,Andy Murray - Tennis player,Pierre Curie - Physicist,James Mason - Actor
+5,16,Janet Jackson - Singer,Pierce Brosnan - Actor,Megan Fox - Actress
+5,17,Sugar Ray Leonard - Boxer,Enya - Singer,Trent Reznor - Musician
+5,18,Tina Fey - Comedian,Pope John Paul II - Pope,George Strait - Country singer
+5,19,Pete Townshend - Musician,Malcolm X - Activist,Sam Smith - Singer
+5,20,Cher - Singer,James Stewart - Actor,Honoré de Balzac - Novelist
+5,21,Notorious B.I.G. - Rapper,Albrecht Dürer - Painter,Josh Allen - Football player
+5,22,Novak Djokovic - Tennis player,Arthur Conan Doyle - Writer,Naomi Campbell - Model
+5,23,Joan Collins - Actress,Jewel - Singer,Ryan Coogler - Film director
+5,24,Bob Dylan - Singer-songwriter,Queen Victoria - British monarch,Patti LaBelle - Singer
+5,25,Ralph Waldo Emerson - Essayist,Ian McKellen - Actor,Mike Myers - Actor
+5,26,Miles Davis - Jazz musician,John Wayne - Actor,Stevie Nicks - Singer
+5,27,Christopher Lee - Actor,Vincent Price - Actor,Andre 3000 - Rapper
+5,28,Kylie Minogue - Singer,Ian Fleming - Writer,Gladys Knight - Singer
+5,29,John F. Kennedy - American president,Bob Hope - Comedian,Danny Elfman - Composer
+5,30,Steven Gerrard - Soccer player,Idina Menzel - Singer,Mel Blanc - Voice actor
+5,31,Clint Eastwood - Actor,Colin Farrell - Actor,Walt Whitman - Poet
+6,1,Marilyn Monroe - American actress,Morgan Freeman - American actor,Alanis Morissette - Canadian singer
+6,2,Awkwafina - American actress,Zachary Quinto - American actor,Morena Baccarin - American actress
+6,3,Rafael Nadal - Spanish tennis player,Anderson Cooper - American journalist,Josephine Baker - French-American dancer
+6,4,Angelina Jolie - American actress,Bar Refaeli - Israeli model,Michelle Phillips - American singer
+6,5,Mark Wahlberg - American actor,Kenny G - American saxophonist,Nick Kroll - American comedian
+6,6,Björn Borg - Swedish tennis player,Paul Giamatti - American actor,Robert Englund - American actor
+6,7,Prince - American musician,Liam Neeson - Irish actor,Tom Jones - Welsh singer
+6,8,Frank Lloyd Wright - American architect,Robert Schumann - German composer,Julianna Margulies - American actress
+6,9,Johnny Depp - American actor,Michael J. Fox - Canadian actor,Natalie Portman - Israeli-American actress
+6,10,Judy Garland - American actress,Prince Philip - British royal,Elizabeth Hurley - English actress
+6,11,Gene Wilder - American actor,Jacques Cousteau - French explorer,Peter Dinklage - American actor
+6,12,Anne Frank - German diarist,George H. W. Bush - American president,Adriana Lima - Brazilian model
+6,13,Chris Evans - American actor,Ashley Olsen - American actress,Malcolm McDowell - English actor
+6,14,Steffi Graf - German tennis player,Boy George - English singer,Lang Lang - Chinese pianist
+6,15,Courteney Cox - American actress,Neil Patrick Harris - American actor,Mohamed Salah - Egyptian footballer
+6,16,Tupac Shakur - American rapper,Adam Smith - Scottish economist,Laurie Metcalf - American actress
+6,17,Venus Williams - American tennis player,Barry Manilow - American singer,Igor Stravinsky - Russian composer
+6,18,Paul McCartney - English musician,Isabella Rossellini - Italian actress,Blake Shelton - American singer
+6,19,Zoe Saldana - American actress,Salman Rushdie - British author,Paula Abdul - American singer
+6,20,Nicole Kidman - Australian actress,Lionel Richie - American singer,Brian Wilson - American musician
+6,21,Chris Pratt - American actor,Lana Del Rey - American singer,Prince William - British royal
+6,22,Meryl Streep - American actress,Cyndi Lauper - American singer,Billy Wilder - Austrian-American filmmaker
+6,23,Alan Turing - English mathematician,Zinedine Zidane - French footballer,Frances McDormand - American actress
+6,24,Lionel Messi - Argentine footballer,Mindy Kaling - American actress,Jeff Beck - English guitarist
+6,25,George Michael - British singer,Ricky Gervais - English comedian,Carly Simon - American singer
+6,26,Ariana Grande - American singer,Derek Jeter - American baseball player,Aubrey Plaza - American actress
+6,27,Helen Keller - American author,Tobey Maguire - American actor,Vera Wang - American designer
+6,28,Mel Brooks - American filmmaker,John Cusack - American actor,Kathy Bates - American actress
+6,29,Antoine de Saint-Exupéry - French writer,Nicole Scherzinger - American singer,Camila Mendes - American actress
+6,30,Michael Phelps - American swimmer,Cheryl Cole - English singer,Vincent D'Onofrio - American actor
+7,1,Diana - Princess of Wales,Carl Lewis - American sprinter,Liv Tyler - American actress
+7,2,Margot Robbie - Australian actress,Lindsay Lohan - American actress,Larry David - American comedian
+7,3,Tom Cruise - American actor,Franz Kafka - German-language writer,Olivia Munn - American actress
+7,4,Post Malone - American rapper,Calvin Coolidge - American president,Nathaniel Hawthorne - American writer
+7,5,Shohei Ohtani - Japanese baseball player,Megan Rapinoe - American soccer player,Huey Lewis - American singer
+7,6,Sylvester Stallone - American actor,Frida Kahlo - Mexican painter,Dalai Lama - Tibetan spiritual leader
+7,7,Ringo Starr - British drummer,Gustav Mahler - Austrian composer,Michelle Kwan - American figure skater
+7,8,Kevin Bacon - American actor,Anjelica Huston - American actress,John D. Rockefeller - American industrialist
+7,9,Tom Hanks - American actor,Jack White - American musician,Courtney Love - American singer
+7,10,Nikola Tesla - Serbian-American inventor,Sofía Vergara - Colombian actress,Arthur Ashe - American tennis player
+7,11,Giorgio Armani - Italian designer,John Quincy Adams - American president,Yul Brynner - Russian-American actor
+7,12,Malala Yousafzai - Pakistani activist,Henry David Thoreau - American writer,Christine McVie - British singer
+7,13,Harrison Ford - American actor,Patrick Stewart - British actor,Ken Jeong - American comedian
+7,14,Phoebe Waller-Bridge - British actress,Gerald Ford - American president,Woody Guthrie - American singer
+7,15,Rembrandt - Dutch painter,Forest Whitaker - American actor,Diane Kruger - German actress
+7,16,Will Ferrell - American actor,Ginger Rogers - American actress,Barry Sanders - American football player
+7,17,Donald Sutherland - Canadian actor,David Hasselhoff - American actor,Luke Bryan - American singer
+7,18,Nelson Mandela - South African leader,Vin Diesel - American actor,Priyanka Chopra - Indian actress
+7,19,Benedict Cumberbatch - British actor,Brian May - British musician,Edgar Degas - French painter
+7,20,Carlos Santana - Mexican guitarist,Sandra Oh - Canadian actress,Gisele Bündchen - Brazilian model
+7,21,Ernest Hemingway - American writer,Robin Williams - American comedian,Erling Haaland - Norwegian footballer
+7,22,Selena Gomez - American singer,Willem Dafoe - American actor,Don Henley - American musician
+7,23,Daniel Radcliffe - British actor,Woody Harrelson - American actor,Slash - British-American guitarist
+7,24,Jennifer Lopez - American singer,Amelia Earhart - American aviator,Alexandre Dumas - French writer
+7,25,Matt LeBlanc - American actor,Walter Payton - American football player,Rosalind Franklin - British chemist
+7,26,Mick Jagger - British singer,Sandra Bullock - American actress,Helen Mirren - British actress
+7,27,Maya Rudolph - American actress,Donnie Yen - Hong Kong actor,Nikolaj Coster-Waldau - Danish actor
+7,28,Jacqueline Kennedy Onassis - American first lady,Beatrix Potter - British author,Harry Kane - English footballer
+7,29,Fernando Alonso - Spanish driver,Martina McBride - American singer,Wil Wheaton - American actor
+7,30,Arnold Schwarzenegger - American actor,Christopher Nolan - British director,Emily Brontë - English novelist
+7,31,J.K. Rowling - British author,Wesley Snipes - American actor,Mark Cuban - American businessman
+8,1,Jason Momoa - American actor,Jerry Garcia - Rock guitarist,Sam Mendes - Film director
+8,2,Peter O'Toole - British actor,Charli XCX - English singer,Kevin Smith - American filmmaker
+8,3,Tom Brady - American football player,Martin Sheen - American actor,Martha Stewart - American businesswoman
+8,4,Barack Obama - American president,Louis Armstrong - Jazz musician,Meghan Markle - American actress
+8,5,Neil Armstrong - American astronaut,Anthony Edwards - Basketball player,Jesse Williams - American actor
+8,6,Andy Warhol - American artist,Lucille Ball - American comedian,Michelle Yeoh - Malaysian actress
+8,7,Charlize Theron - South African actress,David Duchovny - American actor,Michael Shannon - American actor
+8,8,Roger Federer - Swiss tennis player,Dustin Hoffman - American actor,Shawn Mendes - Canadian singer
+8,9,Whitney Houston - American singer,Anna Kendrick - American actress,Gillian Anderson - American actress
+8,10,Antonio Banderas - Spanish actor,Kylie Jenner - American media personality,Justin Theroux - American actor
+8,11,Chris Hemsworth - Australian actor,Viola Davis - American actress,Steve Wozniak - Apple co-founder
+8,12,Cara Delevingne - British model,Casey Affleck - American actor,Tyson Fury - British boxer
+8,13,Alfred Hitchcock - Film director,Sebastian Stan - American actor,Annie Oakley - American sharpshooter
+8,14,Halle Berry - American actress,Steve Martin - American comedian,Magic Johnson - Basketball player
+8,15,Jennifer Lawrence - American actress,Ben Affleck - American actor,Joe Jonas - American singer
+8,16,Madonna - American singer,James Cameron - Film director,Steve Carell - American actor
+8,17,Robert De Niro - American actor,Sean Penn - American actor,Thierry Henry - French footballer
+8,18,Robert Redford - American actor,Edward Norton - American actor,Roberto Clemente - Puerto Rican baseball player
+8,19,Bill Clinton - American president,Coco Chanel - French designer,Matthew Perry - American actor
+8,20,Robert Plant - Rock singer,Amy Adams - American actress,Demi Lovato - American singer
+8,21,Usain Bolt - Jamaican sprinter,Kenny Rogers - Country singer,Kim Cattrall - British actress
+8,22,Dua Lipa - English singer,Ray Bradbury - American author,Kristen Wiig - American actress
+8,23,Kobe Bryant - Basketball player,Gene Kelly - American dancer,River Phoenix - American actor
+8,24,Dave Chappelle - American comedian,Rupert Grint - English actor,Stephen Fry - English actor
+8,25,Sean Connery - Scottish actor,Tim Burton - Film director,Blake Lively - American actress
+8,26,Mother Teresa - Catholic nun,Chris Pine - American actor,Macaulay Culkin - American actor
+8,27,Aaron Paul - American actor,Tom Ford - Fashion designer,Paul Reubens - American comedian
+8,28,Shania Twain - Canadian singer,Jack Black - American actor,Leo Tolstoy - Russian author
+8,29,Michael Jackson - American singer,Ingrid Bergman - Swedish actress,Charlie Parker - Jazz saxophonist
+8,30,Cameron Diaz - American actress,Warren Buffett - American investor,Mary Shelley - English author
+8,31,Richard Gere - American actor,Van Morrison - Northern Irish singer,Chris Tucker - American comedian
+9,1,Zendaya - American actress,Gloria Estefan - Cuban-American singer,Barry Gibb - British singer
+9,2,Keanu Reeves - Canadian actor,Salma Hayek - Mexican actress,Mark Harmon - American actor
+9,3,Shaun White - American snowboarder,Charlie Sheen - American actor,Eileen Gu - Chinese-American skier
+9,4,Beyoncé - American singer,Mark Ronson - British producer,Damon Wayans - American comedian
+9,5,Freddie Mercury - British singer,Michael Keaton - American actor,Raquel Welch - American actress
+9,6,Idris Elba - British actor,Roger Waters - British musician,Jane Curtin - American actress
+9,7,Buddy Holly - American musician,Evan Rachel Wood - American actress,Gloria Gaynor - American singer
+9,8,Pink - American singer,Martin Freeman - British actor,Patsy Cline - American singer
+9,9,Adam Sandler - American actor,Hugh Grant - British actor,Michael Bublé - Canadian singer
+9,10,Colin Firth - British actor,Karl Lagerfeld - German designer,Ryan Phillippe - American actor
+9,11,Harry Connick Jr. - American musician,Taraji P. Henson - American actress,Moby - American musician
+9,12,Jennifer Hudson - American singer,Yao Ming - Chinese basketball player,Paul Walker - American actor
+9,13,Roald Dahl - British author,Fiona Apple - American singer,Niall Horan - Irish singer
+9,14,Amy Winehouse - British singer,Sam Neill - New Zealand actor,Nas - American rapper
+9,15,Prince Harry - British royal,Agatha Christie - British author,Tommy Lee Jones - American actor
+9,16,B.B. King - American musician,Nick Jonas - American singer,Amy Poehler - American actress
+9,17,Alexander Ovechkin - Russian hockey player,John Ritter - American actor,Baz Luhrmann - Australian director
+9,18,Greta Garbo - Swedish actress,James Gandolfini - American actor,Jason Sudeikis - American actor
+9,19,Jimmy Fallon - American comedian,Jeremy Irons - British actor,Twiggy - British model
+9,20,Sophia Loren - Italian actress,George R.R. Martin - American author,Jon Bernthal - American actor
+9,21,Stephen King - American author,Bill Murray - American actor,Leonard Cohen - Canadian singer
+9,22,Andrea Bocelli - Italian tenor,Ronaldo - Brazilian footballer,Tom Felton - British actor
+9,23,Bruce Springsteen - American musician,Ray Charles - American musician,Julio Iglesias - Spanish singer
+9,24,Jim Henson - American puppeteer,F. Scott Fitzgerald - American author,Phil Hartman - Canadian-American comedian
+9,25,Will Smith - American actor,Catherine Zeta-Jones - Welsh actress,Michael Douglas - American actor
+9,26,Serena Williams - American tennis player,Olivia Newton-John - British-Australian singer,T.S. Eliot - American-British poet
+9,27,Gwyneth Paltrow - American actress,Lil Wayne - American rapper,Avril Lavigne - Canadian singer
+9,28,Brigitte Bardot - French actress,Naomi Watts - British actress,Hilary Duff - American actress
+9,29,Jerry Lee Lewis - American musician,Kevin Durant - American basketball player,Halsey - American singer
+9,30,Truman Capote - American author,Monica Bellucci - Italian actress,Marion Cotillard - French actress
+10,1,Julie Andrews - British actress,Jimmy Carter - American president,Brie Larson - American actress
+10,2,Mahatma Gandhi - Indian leader,Sting - English musician,Groucho Marx - American comedian
+10,3,Gwen Stefani - American singer,Neve Campbell - Canadian actress,Lena Headey - English actress
+10,4,Susan Sarandon - American actress,Christoph Waltz - Austrian actor,Dakota Johnson - American actress
+10,5,Kate Winslet - British actress,Neil deGrasse Tyson - American astrophysicist,Guy Pearce - Australian actor
+10,6,Le Corbusier - Swiss architect,Elisabeth Shue - American actress,Britt Ekland - Swedish actress
+10,7,Yo-Yo Ma - American cellist,Toni Braxton - American singer,Simon Cowell - English television personality
+10,8,Matt Damon - American actor,Sigourney Weaver - American actress,Bruno Mars - American singer
+10,9,John Lennon - British musician,Guillermo del Toro - Mexican director,Bella Hadid - American model
+10,10,Giuseppe Verdi - Italian composer,Brett Favre - American football player,David Lee Roth - American singer
+10,11,Amitabh Bachchan - Indian actor,Eleanor Roosevelt - American first lady,Cardi B - American rapper
+10,12,Hugh Jackman - Australian actor,Luciano Pavarotti - Italian tenor,Josh Hutcherson - American actor
+10,13,Paul Simon - American musician,Sacha Baron Cohen - British comedian,Jerry Rice - American football player
+10,14,Dwight D. Eisenhower - American president,Roger Moore - English actor,Usher - American singer
+10,15,Friedrich Nietzsche - German philosopher,Emeril Lagasse - American chef,Mesut Özil - German footballer
+10,16,Oscar Wilde - Irish writer,John Mayer - American musician,Naomi Osaka - Japanese tennis player
+10,17,Eminem - American rapper,Rita Hayworth - American actress,Felicity Jones - English actress
+10,18,Chuck Berry - American musician,Martina Navratilova - American tennis player,Zac Efron - American actor
+10,19,John Lithgow - American actor,Jon Favreau - American director,Philip Pullman - British author
+10,20,Snoop Dogg - American rapper,Tom Petty - American musician,Viggo Mortensen - American actor
+10,21,Alfred Nobel - Swedish chemist,Carrie Fisher - American actress,Kim Kardashian - American media personality
+10,22,Franz Liszt - Hungarian composer,Jeff Goldblum - American actor,Catherine Deneuve - French actress
+10,23,Pelé - Brazilian footballer,Ryan Reynolds - Canadian actor,Emilia Clarke - English actress
+10,24,Drake - Canadian rapper,Kevin Kline - American actor,Wayne Rooney - English footballer
+10,25,Pablo Picasso - Spanish painter,Katy Perry - American singer,Ciara - American singer
+10,26,Keith Urban - Australian musician,Seth MacFarlane - American producer,Bob Hoskins - English actor
+10,27,Theodore Roosevelt - American president,John Cleese - British comedian,Sylvia Plath - American poet
+10,28,Julia Roberts - American actress,Bill Gates - American businessman,Joaquin Phoenix - American actor
+10,29,Winona Ryder - American actress,Richard Dreyfuss - American actor,Bob Ross - American painter
+10,30,Diego Maradona - Argentine footballer,John Adams - American president,Henry Winkler - American actor
+10,31,John Keats - English poet,John Candy - Canadian actor,Marcus Rashford - English footballer
+11,1,Aishwarya Rai - Indian actress,Anthony Kiedis - American singer,Toni Collette - Australian actress
+11,2,Shah Rukh Khan - Indian actor,David Schwimmer - American actor,k.d. lang - Canadian singer
+11,3,Kendall Jenner - American model,Dolph Lundgren - Swedish actor,Charles Bronson - American actor
+11,4,Matthew McConaughey - American actor,Ralph Macchio - American actor,Will Rogers - American humorist
+11,5,Tilda Swinton - British actress,Bryan Adams - Canadian singer,Vivien Leigh - British actress
+11,6,Emma Stone - American actress,Ethan Hawke - American actor,Sally Field - American actress
+11,7,Marie Curie - Polish physicist,Joni Mitchell - Canadian singer,Albert Camus - French writer
+11,8,Gordon Ramsay - British chef,Bram Stoker - Irish author,Bonnie Raitt - American singer
+11,9,Carl Sagan - American astronomer,Hedy Lamarr - Austrian actress,Nick Lachey - American singer
+11,10,Martin Luther - German reformer,Richard Burton - Welsh actor,Ellen Pompeo - American actress
+11,11,Leonardo DiCaprio - American actor,Demi Moore - American actress,Fyodor Dostoevsky - Russian novelist
+11,12,Ryan Gosling - Canadian actor,Anne Hathaway - American actress,Grace Kelly - American actress
+11,13,Whoopi Goldberg - American actress,Gerard Butler - Scottish actor,Robert Louis Stevenson - Scottish novelist
+11,14,Claude Monet - French painter,King Charles III - British monarch,Jawaharlal Nehru - Indian statesman
+11,15,Georgia O'Keeffe - American painter,Ed Asner - American actor,Chad Kroeger - Canadian singer
+11,16,Maggie Gyllenhaal - American actress,Pete Davidson - American comedian,Lisa Bonet - American actress
+11,17,Martin Scorsese - American director,Danny DeVito - American actor,RuPaul - American entertainer
+11,18,Owen Wilson - American actor,Margaret Atwood - Canadian author,Alan Shepard - American astronaut
+11,19,Jodie Foster - American actress,Meg Ryan - American actress,Adam Driver - American actor
+11,20,Edwin Hubble - American astronomer,Bo Derek - American actress,Duane Allman - American guitarist
+11,21,Björk - Icelandic singer,Goldie Hawn - American actress,Voltaire - French writer
+11,22,Scarlett Johansson - American actress,Mark Ruffalo - American actor,Jamie Lee Curtis - American actress
+11,23,Miley Cyrus - American singer,Boris Karloff - British actor,Harpo Marx - American comedian
+11,24,Henri de Toulouse-Lautrec - French painter,Baruch Spinoza - Dutch philosopher,Katherine Heigl - American actress
+11,25,Christina Applegate - American actress,Joe DiMaggio - American baseball player,Andrew Carnegie - American industrialist
+11,26,Tina Turner - American singer,Charles Schulz - American cartoonist,Rita Ora - British singer
+11,27,Bruce Lee - Martial arts actor,Jimi Hendrix - American guitarist,Bill Nye - American educator
+11,28,Jon Stewart - American comedian,Ed Harris - American actor,William Blake - English poet
+11,29,C.S. Lewis - British author,Louisa May Alcott - American novelist,Don Cheadle - American actor
+11,30,Mark Twain - American author,Winston Churchill - British statesman,Ben Stiller - American actor
+12,1,Bette Midler - American singer,Richard Pryor - American comedian,Janelle Monáe - American singer
+12,2,Britney Spears - American singer,Lucy Liu - American actress,Maria Callas - American-Greek soprano
+12,3,Ozzy Osbourne - British singer,Julianne Moore - American actress,Amanda Seyfried - American actress
+12,4,Jay-Z - American rapper,Jeff Bridges - American actor,Tyra Banks - American model
+12,5,Walt Disney - American animator,Little Richard - American singer,Conan Gray - American singer
+12,6,Giannis Antetokounmpo - Greek basketball player,Judd Apatow - American filmmaker,Dave Brubeck - American jazz pianist
+12,7,Larry Bird - American basketball player,Tom Waits - American singer,Sara Bareilles - American singer
+12,8,Jim Morrison - American singer,Nicki Minaj - Trinidadian rapper,Diego Rivera - Mexican painter
+12,9,Judi Dench - British actress,Kirk Douglas - American actor,John Malkovich - American actor
+12,10,Emily Dickinson - American poet,Ada Lovelace - British mathematician,Raven-Symoné - American actress
+12,11,Rita Moreno - American actress,Hailee Steinfeld - American actress,Nikki Sixx - American musician
+12,12,Frank Sinatra - American singer,Jennifer Connelly - American actress,Bill Nighy - English actor
+12,13,Taylor Swift - American singer,Jamie Foxx - American actor,Steve Buscemi - American actor
+12,14,Vanessa Hudgens - American actress,Patty Duke - American actress,Nostradamus - French astrologer
+12,15,Gustave Eiffel - French engineer,Don Johnson - American actor,Adam Brody - American actor
+12,16,Jane Austen - English novelist,Arthur C. Clarke - British writer,Theo James - British actor
+12,17,Sarah Paulson - American actress,Milla Jovovich - American actress,Eugene Levy - Canadian actor
+12,18,Brad Pitt - American actor,Steven Spielberg - American filmmaker,Billie Eilish - American singer
+12,19,Jake Gyllenhaal - American actor,Édith Piaf - French singer,Alyssa Milano - American actress
+12,20,Jonah Hill - American actor,JoJo - American singer,Todd Phillips - American director
+12,21,Samuel L. Jackson - American actor,Jane Fonda - American actress,Chris Evert - American tennis player
+12,22,Ralph Fiennes - British actor,Meghan Trainor - American singer,Diane Sawyer - American journalist
+12,23,Eddie Vedder - American singer,Finn Wolfhard - Canadian actor,Akihito - Japanese emperor
+12,24,Ava Gardner - American actress,Ricky Martin - Puerto Rican singer,Louis Tomlinson - English singer
+12,25,Sissy Spacek - American actress,Humphrey Bogart - American actor,Annie Lennox - British singer
+12,26,Jared Leto - American actor,Kit Harington - British actor,Hugo Lloris - French footballer
+12,27,Louis Pasteur - French chemist,Marlene Dietrich - German actress,Timothée Chalamet - American actor
+12,28,Denzel Washington - American actor,Stan Lee - American writer,John Legend - American singer
+12,29,Jude Law - British actor,Mary Tyler Moore - American actress,Ted Danson - American actor
+12,30,LeBron James - American basketball player,Tiger Woods - American golfer,Rudyard Kipling - English writer
+12,31,Anthony Hopkins - Welsh actor,Donna Summer - American singer,Val Kilmer - American actor
