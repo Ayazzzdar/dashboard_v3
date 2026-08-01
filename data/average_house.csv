@@ -1,0 +1,108 @@
+year,average_house,source
+1920,$700,Estimate - limited pre-1970 national data (approximate)
+1921,$700,Estimate (approximate)
+1922,$720,Estimate (approximate)
+1923,$740,Estimate (approximate)
+1924,$760,Estimate (approximate)
+1925,$780,Estimate (approximate)
+1926,$800,Estimate (approximate)
+1927,$820,Estimate (approximate)
+1928,$840,Estimate (approximate)
+1929,$850,Estimate (approximate)
+1930,$800,Estimate - Depression (approximate)
+1931,$720,Estimate - Depression (approximate)
+1932,$680,Estimate - Depression (approximate)
+1933,$700,Estimate (approximate)
+1934,$720,Estimate (approximate)
+1935,$760,Estimate (approximate)
+1936,$800,Estimate (approximate)
+1937,$840,Estimate (approximate)
+1938,$880,Estimate (approximate)
+1939,$920,Estimate (approximate)
+1940,"$1,000",Estimate (approximate)
+1941,"$1,050",Estimate (approximate)
+1942,"$1,100",Estimate (approximate)
+1943,"$1,200",Estimate (approximate)
+1944,"$1,300",Estimate (approximate)
+1945,"$1,500",Estimate (approximate)
+1946,"$1,800",Estimate - post-war (approximate)
+1947,"$2,100",Estimate (approximate)
+1948,"$2,400",Estimate (approximate)
+1949,"$2,700",Estimate (approximate)
+1950,"$3,000",Estimate - post-war boom (approximate)
+1951,"$3,500",Estimate (approximate)
+1952,"$4,000",Estimate (approximate)
+1953,"$4,400",Estimate (approximate)
+1954,"$4,800",Estimate (approximate)
+1955,"$5,200",Estimate (approximate)
+1956,"$5,600",Estimate (approximate)
+1957,"$6,000",Estimate (approximate)
+1958,"$6,400",Estimate (approximate)
+1959,"$6,800",Estimate (approximate)
+1960,"$7,200",Estimate (approximate)
+1961,"$7,600",Estimate (approximate)
+1962,"$8,000",Estimate (approximate)
+1963,"$8,400",Estimate (approximate)
+1964,"$8,800",Estimate (approximate)
+1965,"$9,200",Estimate (approximate)
+1966,"$9,600",Estimate (approximate)
+1967,"$10,200",Estimate (approximate)
+1968,"$11,000",Estimate (approximate)
+1969,"$12,000",Estimate (approximate)
+1970,"$14,000",Abelson & Chung national estimate
+1971,"$15,500",Abelson & Chung national estimate
+1972,"$17,500",Abelson & Chung national estimate
+1973,"$21,000",Abelson & Chung national estimate
+1974,"$25,000",Abelson & Chung national estimate
+1975,"$28,000",Abelson & Chung national estimate
+1976,"$30,000",Abelson & Chung national estimate
+1977,"$32,000",Abelson & Chung national estimate
+1978,"$34,000",Abelson & Chung national estimate
+1979,"$36,000",Abelson & Chung national estimate
+1980,"$39,000",Abelson & Chung national estimate
+1981,"$45,000",Abelson & Chung national estimate
+1982,"$52,000",Abelson & Chung national estimate
+1983,"$58,000",Abelson & Chung national estimate
+1984,"$63,000",Abelson & Chung national estimate
+1985,"$68,000",Abelson & Chung national estimate
+1986,"$74,000",Abelson & Chung national estimate
+1987,"$83,000",Abelson & Chung national estimate
+1988,"$100,000",Abelson & Chung national estimate
+1989,"$115,000",Abelson & Chung national estimate
+1990,"$118,000",Abelson & Chung national estimate
+1991,"$120,000",Abelson & Chung national estimate
+1992,"$122,000",Abelson & Chung national estimate
+1993,"$128,000",Abelson & Chung national estimate
+1994,"$134,000",Abelson & Chung national estimate
+1995,"$138,000",Abelson & Chung national estimate
+1996,"$143,000",Abelson & Chung national estimate
+1997,"$150,000",Abelson & Chung national estimate
+1998,"$162,000",Abelson & Chung national estimate
+1999,"$178,000",Abelson & Chung national estimate
+2000,"$195,000",Abelson & Chung national estimate
+2001,"$220,000",Abelson & Chung national estimate
+2002,"$260,000",Abelson & Chung national estimate
+2003,"$300,000",ABS RPPI series begins / Abelson & Chung
+2004,"$320,000",ABS Residential Property Price Index (national mean)
+2005,"$335,000",ABS RPPI national mean
+2006,"$360,000",ABS RPPI national mean
+2007,"$400,000",ABS RPPI national mean
+2008,"$395,000",ABS RPPI national mean - GFC dip
+2009,"$430,000",ABS RPPI national mean
+2010,"$460,000",ABS RPPI national mean
+2011,"$460,000",ABS RPPI national mean
+2012,"$470,000",ABS RPPI national mean
+2013,"$505,000",ABS RPPI national mean
+2014,"$540,000",ABS RPPI national mean
+2015,"$585,000",ABS RPPI national mean
+2016,"$620,000",ABS RPPI national mean
+2017,"$660,000",ABS RPPI national mean
+2018,"$650,000",ABS RPPI national mean
+2019,"$640,000",ABS RPPI national mean
+2020,"$710,000","ABS mean dwelling price ($739,900 Dec qtr)"
+2021,"$820,000","ABS mean dwelling price ($863,700 Sep qtr)"
+2022,"$890,000",ABS mean dwelling price national
+2023,"$870,000",ABS mean dwelling price national
+2024,"$920,000",ABS/CoreLogic national mean dwelling
+2025,"$970,000",CoreLogic national dwelling value ~2025
+2026,"$990,000",CoreLogic national dwelling value (current)
