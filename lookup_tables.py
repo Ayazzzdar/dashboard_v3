@@ -69,6 +69,27 @@ def _load_date_range_table(filename: str) -> list:
     return rows
 
 
+def _load_dayofyear_table(filename: str) -> Dict[tuple, dict]:
+    """Load a day-of-year CSV keyed by an integer (month, day) tuple.
+    Used for facts tied to a calendar date regardless of year - e.g.
+    famous people born on a given day. First two columns MUST be
+    'month' and 'day' (1-12 and 1-31).
+    """
+    table = {}
+    filepath = DATA_DIR / filename
+    if not filepath.exists():
+        return table
+    with open(filepath, newline='', encoding='utf-8') as f:
+        reader = csv.DictReader(f)
+        for row in reader:
+            try:
+                key = (int(row['month']), int(row['day']))
+            except (KeyError, ValueError):
+                continue
+            table[key] = row
+    return table
+
+
 # Load all tables once at import time. Streamlit re-imports modules
 # fairly rarely during a session, so this is cheap and avoids re-reading
 # CSVs on every single order processed.
@@ -87,6 +108,7 @@ _STAMP_TABLE = _load_year_table("stamp_prices.csv")
 _BABY_NAMES_TABLE = _load_year_table("baby_names.csv")
 _BIRTHS_TABLE = _load_year_table("aus_births.csv")
 _HOUSE_TABLE = _load_year_table("average_house.csv")
+_CELEBRITY_TABLE = _load_dayofyear_table("celebrity_birthdays.csv")
 _PM_TABLE = _load_date_range_table("pm_terms.csv")
 _MONARCH_TABLE = _load_date_range_table("monarchs.csv")
 
@@ -381,6 +403,24 @@ def get_average_house(year: int) -> Optional[str]:
     return row.get('average_house', '').strip() or None
 
 
+def get_celebrity(month: int, day: int, rank: int) -> Optional[str]:
+    """Return a verified famous person born on this calendar day (month+day)
+    at slot 1-3, formatted 'Name - Profession', or None if the day isn't in
+    the table or the cell is blank (falls back to LLM generation).
+
+    Birthdays are date-of-year facts (not year facts), so this is keyed by
+    (month, day) and ignores the birth year. Every entry is an individually
+    verified birthday - the whole point of this table is to remove the
+    wrong-birth-date errors the LLM produces (e.g. placing a celebrity on
+    the wrong day). A missing day returns None and the LLM value stands."""
+    if rank < 1 or rank > 3:
+        return None
+    row = _CELEBRITY_TABLE.get((month, day))
+    if not row:
+        return None
+    return row.get(f'celebrity{rank}', '').strip() or None
+
+
 def resolve_lookup_fields(day: int, month: int, year: int) -> Dict[str, Optional[str]]:
     """Master resolver - call this once per order to get every lookup-
     table-backed field in one go. Returns a dict where any field that
@@ -390,6 +430,9 @@ def resolve_lookup_fields(day: int, month: int, year: int) -> Dict[str, Optional
     """
     pm, incoming_pm = get_pm_and_incoming(day, month, year)
     return {
+        "Celebrity1": get_celebrity(month, day, 1),
+        "Celebrity2": get_celebrity(month, day, 2),
+        "Celebrity3": get_celebrity(month, day, 3),
         "NRLWinner": get_nrl_winner(year),
         "AFLWinner": get_afl_winner(year),
         "Bathurst1000": resolve_bathurst(year),
