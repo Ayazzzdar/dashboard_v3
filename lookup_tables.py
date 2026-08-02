@@ -108,6 +108,7 @@ _STAMP_TABLE = _load_year_table("stamp_prices.csv")
 _BABY_NAMES_TABLE = _load_year_table("baby_names.csv")
 _BIRTHS_TABLE = _load_year_table("aus_births.csv")
 _HOUSE_TABLE = _load_year_table("average_house.csv")
+_CINEMA_TABLE = _load_year_table("cinema_prices.csv")
 _CELEBRITY_TABLE = _load_dayofyear_table("celebrity_birthdays.csv")
 _PM_TABLE = _load_date_range_table("pm_terms.csv")
 _MONARCH_TABLE = _load_date_range_table("monarchs.csv")
@@ -403,6 +404,19 @@ def get_average_house(year: int) -> Optional[str]:
     return row.get('average_house', '').strip() or None
 
 
+def get_cinema_price(year: int) -> Optional[str]:
+    """Return the verified average Australian cinema ticket price for a year
+    in AUD, or None if the year isn't in the table (falls back to LLM).
+    Source: Screen Australia average cinema ticket price series, which
+    begins in 1976. Pre-1976 has no official annual series, so those years
+    return None by design (the LLM estimates them). 2026 carries forward the
+    most recent published value (2025)."""
+    row = _CINEMA_TABLE.get(year)
+    if not row:
+        return None
+    return row.get('cinema_price', '').strip() or None
+
+
 def get_celebrity(month: int, day: int, rank: int) -> Optional[str]:
     """Return a verified famous person born on this calendar day (month+day)
     at slot 1-3, formatted 'Name - Profession', or None if the day isn't in
@@ -448,6 +462,7 @@ def resolve_lookup_fields(day: int, month: int, year: int) -> Dict[str, Optional
         "AustraliaPopulation": get_aus_population(year),
         "WorldPopulation": get_world_population(year),
         "StampPrice": get_stamp_price(year),
+        "CinemaPrice": get_cinema_price(year),
         "BoyName1": get_boy_name(year, 1),
         "BoyName2": get_boy_name(year, 2),
         "BoyName3": get_boy_name(year, 3),
