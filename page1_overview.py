@@ -254,15 +254,16 @@ def render_page1(order, output_path):
     sal_cx = (188 + 725) // 2
     per_year_f = LB(40, italic=True)
     amount_txt = fmt_money(order.get("AverageSalary", ""))
-    # Dynamically size the salary amount (Bold) so it fills the box width
-    # nicely - short values like "$520" no longer look tiny next to long
-    # ones. Grow to the largest size that keeps ~46px side padding and still
-    # fits the amount + "per year" stack vertically. Capped 120, floored 60.
-    _sal_max_w = (725 - 188) - 92
+    # Dynamically size the salary amount (Bold) so it fills the box - short
+    # values like "$660" grow large instead of looking tiny in the wide box.
+    # Grow to the largest size that keeps ~26px side padding and still fits
+    # the amount + "per year" stack vertically (so short numbers become tall,
+    # long numbers fill the width). Capped 105, floored 60.
+    _sal_max_w = (725 - 188) - 84
     _sal_max_h = (sal_box_bottom - sal_box_top) - 44
     _py_probe = draw.textbbox((0, 0), "per year", font=per_year_f, anchor="ls")
     _py_probe_h = _py_probe[3] - _py_probe[1]
-    _sal_size = 120
+    _sal_size = 105
     while _sal_size > 60:
         _pf = LB(_sal_size, "Bold")
         _pb = draw.textbbox((0, 0), amount_txt, font=_pf, anchor="ls")
