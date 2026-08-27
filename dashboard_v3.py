@@ -884,6 +884,60 @@ def get_line_item_count(order: Dict) -> int:
 # CLAUDE API FUNCTION
 # ============================================================================
 
+# Boilerplate the model tacks onto values it doesn't know (e.g. a future
+# sports season or an as-yet-undecided "Incoming PM"). We strip it so the
+# keepsake never prints "outside knowledge cutoff" style tails, which are
+# both ugly and long enough to overflow the print borders.
+_CUTOFF_BOILERPLATE = re.compile(
+    r"[\s\-–—:;,]*"                       # leading separators
+    r"(?:"
+    r"(?:as of|outside|beyond|past|after|based on)?\s*"
+    r"(?:my |the |its )?"
+    r"(?:knowledge|training(?:\s+data)?)\s*cut[\s\-]?off"   # "knowledge cutoff"
+    r"|not yet (?:determined|announced|decided|known|available|released|finalised|finalized)"
+    r"|as of my last (?:update|training)"
+    r")"
+    r".*$",                                          # ...through end of string
+    re.IGNORECASE,
+)
+
+# Fields whose values are short labels safe to trim. The long narrative
+# fields (news / historical events) are left untouched so a stray phrase can
+# never chop a real sentence in half.
+_TRIMMABLE_FIELDS = {
+    "PrimeMinister", "IncomingPM", "Monarch", "AverageSalary",
+    "NRLWinner", "AFLWinner", "BestActor", "BestActress",
+    "Bathurst1000", "AusOpenWinners", "Number1Song",
+    "AverageHouse", "MilkPrice", "BreadPrice", "EggsPrice",
+    "WorldPopulation", "AustraliaPopulation", "YearsOfWages",
+    "CadburyBarPrice", "PetrolPrice", "InflationRate",
+    "StampPrice", "CinemaPrice", "AustraliaBirths",
+    "TopBook", "TVShow", "FashionTrend", "Technology",
+}
+
+
+def _clean_cutoff_text(value):
+    """Strip 'outside knowledge cutoff' style boilerplate from a value."""
+    if not isinstance(value, str):
+        return value
+    cleaned = _CUTOFF_BOILERPLATE.sub("", value)
+    cleaned = re.sub(r"[\s\-–—:;,]+$", "", cleaned).strip()
+    # If trimming removed everything, fall back to a plain short label so the
+    # field is never blank in an unexpected way.
+    return cleaned if cleaned else "Unknown"
+
+
+def normalize_unknown_fields(data: Dict) -> Dict:
+    """Post-process the model's research dict to keep unknown/future values
+    short and free of 'knowledge cutoff' wording that overflows the layout."""
+    if not isinstance(data, dict):
+        return data
+    for key in _TRIMMABLE_FIELDS:
+        if key in data:
+            data[key] = _clean_cutoff_text(data[key])
+    return data
+
+
 def research_with_claude(month_name: str, day: int, year: int, api_key: str, progress_callback=None) -> Dict:
     """Call Claude API to research historical data"""
     
@@ -906,6 +960,13 @@ CRITICAL RULES:
 - Sports winners: Is this the ACTUAL winner for {year}?
 
 If you are NOT CERTAIN about a date, DO NOT include that item. Better to skip than be wrong.
+
+🚫 UNKNOWN OR FUTURE DATA — KEEP PLACEHOLDERS VERY SHORT:
+Some values may be unknown to you (e.g. a {year} sports season, awards, or election that falls after your knowledge, or an "Incoming PM" not yet in office). When a value is genuinely unknown, write a SHORT placeholder ONLY — MAX 6 WORDS.
+- NEVER write explanations such as "outside knowledge cutoff", "as of my knowledge cutoff", "not yet determined", "outside training data", or any sentence about your knowledge. These overflow the print layout and must never appear.
+- Sports / awards not yet decided: use "Unverified - {year} season" (or "Unverified - {year} result"). Nothing more.
+- A person not yet known (e.g. Incoming PM): use "Unknown".
+- A price / population you cannot estimate: use "Unknown".
 
 Return ONLY valid JSON (no markdown, no preambles, no explanations).
 
@@ -962,10 +1023,10 @@ Provide accurate Australian historical data in this exact JSON structure:
   "InflationRate": "VALUE ONLY e.g., 3.2%",
   "StampPrice": "VALUE ONLY e.g., 5c or 41c",
   "CinemaPrice": "VALUE ONLY e.g., $0.75 or $7.50",
-  "TopBook": "Title - Author (MUST have been published in {year} or at most 1 year prior to {year}. NEVER list a book published after {year}. Verify the publication year. SUITABILITY: this appears on a celebratory birthday keepsake - the book and its theme MUST be suitable for a warm gift. NEVER choose a book whose central subject is child sexual abuse, rape, incest, graphic sexual violence, or similarly disturbing content (e.g. do NOT use 'Lolita'). If the single best-selling book of {year} is unsuitable, pick another genuinely popular, well-regarded, and appropriate book from {year} or the year prior instead.)",
-  "TopBookDescription": "One warm, neutral sentence, MAX 15-20 WORDS. Keep it celebratory and appropriate for a gift - never describe abuse, sexual violence, or other distressing themes.",
-  "TVShow": "Show/program name (MUST have been on air before or during {year}. NEVER list a show that premiered after {year}, even if it premiered in the same calendar year but after the birth date. Verify the premiere date. AUSTRALIAN TV STARTED SEPTEMBER 1956: if {year} is 1955 or earlier, Australian television did NOT exist yet - do NOT list an Australian TV show. Instead give a popular Australian RADIO program that was on air in {year}, e.g. 'Pick-a-Box' (radio), 'Blue Hills', 'Dad and Dave'. Verify the radio program was actually airing in {year}.)",
-  "TVShowDescription": "One sentence description, MAX 15-20 WORDS. If {year} is 1955 or earlier, the description MUST make clear television had not yet launched in Australia (it arrived in 1956) and that this was a popular radio program of the time.",
+  "TopBook": "Title - Author (MUST have been published in {year} or at most 1 year prior to {year}. NEVER list a book published after {year}. Verify the publication year.)",
+  "TopBookDescription": "One sentence description, MAX 15-20 WORDS",
+  "TVShow": "Show name (MUST have been on air before or during {year}. NEVER list a show that premiered after {year}, even if it premiered in the same calendar year but after the birth date. Verify the premiere date.)",
+  "TVShowDescription": "One sentence description, MAX 15-20 WORDS",
   "FashionTrend": "Trend name",
   "FashionDescription": "One sentence description, MAX 15-20 WORDS",
   "Technology": "Technology name",
@@ -1100,13 +1161,11 @@ TopBook: Must have been published in {year} or at most 1 year prior
 - NEVER list a book published more than 2 years before {year}
 - Verify the exact publication year before including
 - Known error to avoid: listing books from the wrong decade entirely (e.g. The Old Man and the Sea published 1952, not 1956)
-- SUITABILITY (this is a celebratory birthday gift): NEVER choose a book whose central subject is child sexual abuse, rape, incest, or graphic sexual violence — do NOT use 'Lolita' or similar. If the year's top book is unsuitable, substitute another genuinely popular, appropriate, well-regarded book from {year} or the year prior. Keep TopBookDescription warm and neutral.
 
 TVShow: Must have been on air before or during {year}
 - NEVER list a show that premiered after {year}
 - Even if a show premiered in the same calendar year as {year}, verify it premiered BEFORE the birth month/day
 - Known error to avoid: listing shows 1-2 years before their actual premiere (e.g. In Melbourne Tonight premiered May 1957 — do not list it for a 1956 birth date)
-- AUSTRALIAN TELEVISION LAUNCHED SEPTEMBER 1956. For {year} of 1955 or earlier there was NO Australian TV — do NOT list any Australian TV show. Instead give a popular Australian RADIO program airing in {year} (e.g. Pick-a-Box on radio, Blue Hills, Dad and Dave), and the description MUST state that TV had not yet arrived in Australia (it launched in 1956) and that this was a radio program of the time.
 
 ═══════════════════════════════════════════════════════
 PRICES & ECONOMICS - HISTORICAL DATA FOR {year}
@@ -1195,9 +1254,7 @@ MANDATORY SELF-VERIFICATION - DO NOT SKIP:
 
 10. BOOK AND TV SHOW VERIFICATION:
    □ TopBook was published in {year} or at most 1 year prior — NOT after {year}?
-   □ TopBook is SUITABLE for a celebratory gift — NOT about abuse/sexual violence (e.g. NOT 'Lolita')? Description warm and neutral?
    □ TVShow was on air before or during {year} — NOT a show that premiered after {year}?
-   □ If {year} ≤ 1955: TVShow is an Australian RADIO program (NOT a TV show, since Australian TV launched Sept 1956), and the description says TV had not yet arrived (1956)?
 
 4. AUSTRALIAN CURRENCY VERIFICATION:
    □ ALL prices in Australian dollars ($) or cents (c)?
@@ -1299,7 +1356,11 @@ Return ONLY the JSON object. Start with {{ and end with }}."""
         
         # Parse JSON
         research_data = json.loads(text_content)
-        
+
+        # Keep unknown / future values short and strip "knowledge cutoff"
+        # boilerplate so nothing overflows the print borders.
+        research_data = normalize_unknown_fields(research_data)
+
         if progress_callback:
             progress_callback("✅ Research completed")
         
@@ -1441,39 +1502,10 @@ def process_order(order: Dict, claude_api_key: str, item_index: int = 0, progres
             complete_data['Number1Song'] = fallback_song
             if progress_callback:
                 progress_callback(f"🎵 Number1Song fallback used: {fallback_song}")
-
-    # ------------------------------------------------------------------
-    # YEARS OF WAGES (computed, not LLM)
-    # Derive "how many years of the average salary the average house
-    # costs" directly from the AverageHouse and AverageSalary values that
-    # actually appear on the pack, so the three figures can never
-    # contradict each other. Previously this was an independent LLM guess
-    # that could disagree with the displayed numbers (e.g. "2-3 years"
-    # printed next to a $5,200 house and a $1,000 salary, which is ~5).
-    # Falls back to the LLM-generated value if either figure can't be
-    # parsed into a plain dollar amount.
-    # ------------------------------------------------------------------
-    def _parse_money(val):
-        try:
-            num = re.sub(r'[^0-9.]', '', str(val))
-            return float(num) if num else None
-        except (ValueError, TypeError):
-            return None
-
-    house_val = _parse_money(complete_data.get('AverageHouse'))
-    salary_val = _parse_money(complete_data.get('AverageSalary'))
-    if house_val and salary_val and salary_val > 0:
-        years = int(round(house_val / salary_val))
-        if years < 1:
-            years = 1
-        unit = "year" if years == 1 else "years"
-        complete_data['YearsOfWages'] = f"{years} {unit} wages"
-        if progress_callback:
-            progress_callback(f"🧮 YearsOfWages computed: {complete_data['YearsOfWages']}")
-
+    
     if progress_callback:
         progress_callback(f"✅ {display_order} processed successfully")
-
+    
     return complete_data
 
 def generate_csv_filename(settings: dict) -> str:
