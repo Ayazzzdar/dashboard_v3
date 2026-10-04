@@ -60,6 +60,10 @@ def render_pack(order, output_dir):
     order_id = order.get("OrderID", "")
     name = order.get("Name", "")
 
+    # Express orders get an (EXPRESS) tag in the filename (not on the artwork)
+    if order.get("IsExpress"):
+        name = f"{name} (EXPRESS)"
+
     paths = []
     for page_num, renderer in enumerate(PAGE_RENDERERS, start=1):
         fname = build_filename(order_id, name, page_num)
