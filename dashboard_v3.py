@@ -796,7 +796,7 @@ def fetch_shopify_orders(api_token: str, store_url: str) -> List[Dict]:
             "status": "any",
             "fulfillment_status": "unfulfilled",
             "limit": 250,
-            "fields": "id,name,email,line_items,fulfillment_status,created_at"
+            "fields": "id,name,email,line_items,fulfillment_status,created_at,shipping_lines"
         }
         
         # Add pagination if we have page_info
@@ -832,6 +832,20 @@ def fetch_shopify_orders(api_token: str, store_url: str) -> List[Dict]:
             break
     
     return all_orders
+
+def is_express_order(order: Dict) -> bool:
+    """True if the order's shipping method looks like Express shipping.
+
+    Matches any shipping method whose title/code contains "express"
+    (e.g. "Express Tracked Shipping"). Used only to tag exported PNG
+    filenames - it never changes what's printed on the keepsake.
+    """
+    for line in order.get("shipping_lines", []) or []:
+        label = f"{line.get('title') or ''} {line.get('code') or ''}".lower()
+        if "express" in label:
+            return True
+    return False
+
 
 def extract_personalization_data(order: Dict, item_index: int = 0) -> Optional[tuple]:
     """Extract Full Name and Birthday from a specific line item in an order
@@ -1448,6 +1462,7 @@ def process_order(order: Dict, claude_api_key: str, item_index: int = 0, progres
     complete_data = {
         "OrderID": display_order,  # Include item suffix if multiple items
         "Name": full_name.upper(),
+        "IsExpress": is_express_order(order),  # True = Express Tracked Shipping
         "DayOfWeek": day_of_week,
         "MonthName": month_name,
         "Day": day,
