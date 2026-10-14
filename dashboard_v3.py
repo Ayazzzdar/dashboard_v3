@@ -789,35 +789,43 @@ def fetch_shopify_orders(api_token: str, store_url: str) -> List[Dict]:
     
     all_orders = []
     page_info = None
-    
+
     # Keep fetching until we have all orders
     while True:
-        params = {
-            "status": "any",
-            "fulfillment_status": "unfulfilled",
-            "limit": 250,
-            "fields": "id,name,email,line_items,fulfillment_status,created_at,shipping_lines"
-        }
-        
-        # Add pagination if we have page_info
         if page_info:
-            params["page_info"] = page_info
-        
+            # Cursor pages: Shopify ONLY allows limit + fields alongside
+            # page_info. Sending status/fulfillment_status here returns a
+            # 400 and breaks pagination - which is why only the first 250
+            # orders ever showed. The cursor already remembers the filter.
+            params = {
+                "limit": 250,
+                "fields": "id,name,email,line_items,fulfillment_status,created_at,shipping_lines",
+                "page_info": page_info,
+            }
+        else:
+            # First page: apply the filters.
+            params = {
+                "status": "any",
+                "fulfillment_status": "unfulfilled",
+                "limit": 250,
+                "fields": "id,name,email,line_items,fulfillment_status,created_at,shipping_lines",
+            }
+
         try:
             response = requests.get(base_url, headers=headers, params=params, timeout=30)
-            
+
             if response.status_code != 200:
-                st.error(f"Shopify API Error: {response.status_code}")
+                # Surface the real reason instead of just the status code.
+                st.error(f"Shopify API Error {response.status_code}: {response.text[:300]}")
                 break
-            
+
             orders = response.json().get("orders", [])
             all_orders.extend(orders)
-            
+
             # Check if there are more pages
             link_header = response.headers.get("Link", "")
             if "rel=\"next\"" in link_header:
                 # Extract page_info from Link header
-                import re
                 match = re.search(r'page_info=([^&>]+)', link_header)
                 if match:
                     page_info = match.group(1)
@@ -826,11 +834,11 @@ def fetch_shopify_orders(api_token: str, store_url: str) -> List[Dict]:
             else:
                 # No more pages
                 break
-                
+
         except Exception as e:
             st.error(f"Error fetching orders: {e}")
             break
-    
+
     return all_orders
 
 def is_express_order(order: Dict) -> bool:
