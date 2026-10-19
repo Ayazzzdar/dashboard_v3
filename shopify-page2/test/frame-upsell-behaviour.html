@@ -1,0 +1,159 @@
+<!--
+  Behaviour-only copy of snippets/tda-frame-upsell.liquid as it exists in the
+  CRO v4 theme (markup + script verbatim, <style> dropped because it has no
+  bearing on the cart chain). Used by run-cro-v4.mjs so the test exercises the
+  real intercept order: frame wrapper outermost, pack-multi wrapper beneath it.
+-->
+<div id="tda-frame-upsell-container">
+  <label class="tda-frame-box" id="tdaFrameBox">
+    <span class="tda-badge-popular">POPULAR</span>
+    <div class="tda-frame-inner">
+      <div class="tda-checkbox-wrapper">
+        <input type="checkbox" id="tdaFrameCheckbox" class="tda-checkbox-input">
+        <span class="tda-checkbox-visual"></span>
+      </div>
+      <div class="tda-content">
+        <div class="tda-title-row">
+          <span class="tda-title" id="tdaFrameTitle">Add Premium Frame</span>
+          <span class="tda-badge-discount">25% OFF</span>
+        </div>
+        <p class="tda-desc" id="tdaFrameDesc">Add an extra touch to your gift — ready to display!</p>
+      </div>
+      <div class="tda-price-box">
+        <span class="tda-price-main" id="tdaFramePriceMain">+$30.00</span>
+        <span class="tda-price-compare" id="tdaFramePriceWas">$40.00</span>
+        <span class="tda-price-save" id="tdaFramePriceSave">Save $10.00</span>
+      </div>
+    </div>
+  </label>
+
+  <div class="tda-frame-qty" id="tdaFrameQty">
+    <span class="tda-qty-label">How many frames?</span>
+    <div class="tda-qty-options" id="tdaFrameQtyOptions"></div>
+  </div>
+
+  <script>
+    (function() {
+      const FRAME_VARIANT_ID = '48940258918555';
+      const FRAME_PRICE = 30.00;
+      const FRAME_RRP   = 40.00;
+
+      const checkbox  = document.getElementById('tdaFrameCheckbox');
+      const box       = document.getElementById('tdaFrameBox');
+      const qtyPanel  = document.getElementById('tdaFrameQty');
+      const titleEl   = document.getElementById('tdaFrameTitle');
+      const descEl    = document.getElementById('tdaFrameDesc');
+      const priceMain = document.getElementById('tdaFramePriceMain');
+      const priceWas  = document.getElementById('tdaFramePriceWas');
+      const priceSave = document.getElementById('tdaFramePriceSave');
+
+      let frameQty = 1;
+
+      function getPackCount() {
+        return window.tdaGetPackCount ? window.tdaGetPackCount() : 1;
+      }
+
+      function updateFrameDisplay() {
+        const qty = frameQty;
+        const totalPrice = FRAME_PRICE * qty;
+        const totalRRP   = FRAME_RRP * qty;
+        priceMain.textContent = '+$' + totalPrice.toFixed(2);
+        priceWas.textContent  = '$' + totalRRP.toFixed(2);
+        priceSave.textContent = 'Save $' + (totalRRP - totalPrice).toFixed(2);
+        if (qty > 1) {
+          titleEl.textContent = 'Add ' + qty + ' Premium Frames';
+          descEl.textContent  = 'One for each archive — ready to display!';
+        } else {
+          titleEl.textContent = 'Add Premium Frame';
+          descEl.textContent  = 'Add an extra touch to your gift — ready to display!';
+        }
+      }
+
+      function updateQtyVisibility() {
+        const packCount = getPackCount();
+        const p2Open  = packCount > 1;
+        const checked = checkbox.checked;
+        if (p2Open && checked) {
+          buildQtyOptions(packCount);
+          qtyPanel.classList.add('visible');
+          box.classList.add('qty-open');
+        } else {
+          qtyPanel.classList.remove('visible');
+          box.classList.remove('qty-open');
+          if (!p2Open) { frameQty = 1; updateFrameDisplay(); }
+        }
+      }
+
+      checkbox.addEventListener('change', function() {
+        box.classList.toggle('active', this.checked);
+        updateQtyVisibility();
+      });
+
+      function buildQtyOptions(count) {
+        const container = document.getElementById('tdaFrameQtyOptions');
+        if (!container) return;
+        const currentQty = frameQty;
+        container.innerHTML = '';
+        for (let i = 1; i <= count; i++) {
+          const div = document.createElement('div');
+          div.className = 'tda-qty-opt';
+          div.innerHTML =
+            '<input type="radio" name="tda-frame-qty" id="tda-fq' + i + '" value="' + i + '"' + (i === currentQty ? ' checked' : '') + '>' +
+            '<label class="tda-qty-opt-label" for="tda-fq' + i + '">' +
+              '<span class="tda-qty-name">' + (i === 1 ? '1 Frame' : i + ' Frames') + '</span>' +
+              '<span class="tda-qty-price">+$' + (30 * i).toFixed(2) + '</span>' +
+              '<span class="tda-qty-save">Save $' + (10 * i).toFixed(0) + '</span>' +
+            '</label>';
+          container.appendChild(div);
+          div.querySelector('input').addEventListener('change', function() {
+            frameQty = parseInt(this.value);
+            updateFrameDisplay();
+          });
+        }
+        if (frameQty > count) {
+          frameQty = count;
+          const radio = document.getElementById('tda-fq' + count);
+          if (radio) radio.checked = true;
+          updateFrameDisplay();
+        }
+      }
+
+      let lastPackCount = 1;
+      setInterval(function() {
+        const current = getPackCount();
+        if (current !== lastPackCount) { lastPackCount = current; updateQtyVisibility(); }
+      }, 300);
+
+      /* FETCH INTERCEPT — handles frame add */
+      const originalFetch = window.fetch;
+      window.fetch = async function(...args) {
+        const [url, options] = args;
+        if (url && (url.includes('/cart/add') || url.includes('cart/add.js'))) {
+          const p2IsOpen = getPackCount() > 1;
+          if (checkbox.checked && !p2IsOpen) {
+            try {
+              const body = options && options.body;
+              if (body instanceof FormData) {
+                const frameFormData = new FormData();
+                frameFormData.append('id', FRAME_VARIANT_ID);
+                frameFormData.append('quantity', String(frameQty));
+                frameFormData.append('properties[_Frame Upsell]', 'Product Page - 25% OFF $40');
+                frameFormData.append('properties[_Frames]', frameQty + ' frame(s)');
+                const name1 = document.querySelector('[name="properties[Full Name]"]');
+                if (name1 && name1.value) frameFormData.append('properties[_Bundled With]', name1.value);
+                const [mainResponse] = await Promise.all([
+                  originalFetch(url, options),
+                  originalFetch(url, { method: 'POST', body: frameFormData })
+                ]);
+                return mainResponse;
+              }
+            } catch(err) {
+              return originalFetch(...args);
+            }
+          }
+        }
+        return originalFetch(...args);
+      };
+    })();
+  </script>
+</div>

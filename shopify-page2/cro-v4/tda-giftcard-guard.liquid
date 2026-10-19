@@ -1,0 +1,145 @@
+{%- comment -%}
+  The Day Archive — tda-giftcard-guard (CRO v4 theme only)
+
+  Keeps the bonus gift card line matched to the number of archives in the cart,
+  so the automatic discount always has something to zero:
+
+    0 archives   → remove the bonus card
+    1 archive    → bonus card must be the $20 one, quantity 1
+    2+ archives  → bonus card must be the $25 one, quantity 1
+
+  Without this, a shopper who deletes an archive in the Kaching drawer would
+  reach checkout holding a $25 card that no discount covers, and be charged for
+  it. The guard only ever touches a gift card line carrying properties[_Bonus];
+  a gift card the shopper chose to buy is left alone.
+
+  Rendered from sections/footer-group.json so it is present wherever the cart
+  drawer is.
+{%- endcomment -%}
+
+<script>
+(function(){
+  var ARCHIVE_VARIANT_IDS = [48204546932891];     /* The Birth Day Archive Pack */
+  var GIFT_CARD_20 = 49514465558683;
+  var GIFT_CARD_25 = 49852343779483;
+  var UPGRADE_AT   = 2;                           /* archives needed for the $25 card */
+  var BONUS_PROP   = '_Bonus';
+  var PROP_20      = 'Free $20 Gift Card - 1 Archive';
+  var PROP_25      = 'Free $25 Gift Card - 2 Archives';
+  var RELOAD_AFTER_FIX = true;  /* the Kaching drawer has no public refresh hook */
+
+  var checking = false;
+  var timer = null;
+  var originalFetch = window.fetch;
+
+  function isCartMutation(u) {
+    return /\/cart\/(change|update|add|clear)(\.js)?(\?|$)/.test(u);
+  }
+
+  function scheduleCheck() {
+    clearTimeout(timer);
+    timer = setTimeout(checkCart, 450);
+  }
+
+  function post(path, payload) {
+    return originalFetch(path, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
+      body: JSON.stringify(payload)
+    });
+  }
+
+  async function checkCart() {
+    if (checking) return;
+    checking = true;
+    try {
+      var res = await originalFetch('/cart.js', { headers: { 'Accept': 'application/json' }, cache: 'no-store' });
+      if (!res.ok) return;
+      var cart = await res.json();
+      var items = cart.items || [];
+
+      var archives = 0;
+      var bonusLines = [];
+      for (var i = 0; i < items.length; i++) {
+        var it = items[i];
+        if (ARCHIVE_VARIANT_IDS.indexOf(it.variant_id) !== -1) archives += it.quantity;
+        var isGift = (it.variant_id === GIFT_CARD_20 || it.variant_id === GIFT_CARD_25);
+        if (isGift && it.properties && it.properties[BONUS_PROP]) bonusLines.push(it);
+      }
+
+      if (!bonusLines.length) { return; }   /* nothing of ours in the cart */
+
+      var wantVariant = archives >= UPGRADE_AT ? GIFT_CARD_25 : (archives >= 1 ? GIFT_CARD_20 : null);
+      var keeper = null;
+      var changed = false;
+
+      /* Drop anything that is not the denomination this cart has earned */
+      for (var j = 0; j < bonusLines.length; j++) {
+        var line = bonusLines[j];
+        if (wantVariant !== null && line.variant_id === wantVariant && !keeper) {
+          keeper = line;
+          continue;
+        }
+        console.log('TDA GC GUARD: removing bonus card', line.variant_id, '(archives=' + archives + ')');
+        var rm = await post('/cart/change.js', { id: line.key, quantity: 0 });
+        if (rm.ok) changed = true;
+      }
+
+      /* Upgrade or downgrade: the earned card is not in the cart yet */
+      if (wantVariant !== null && !keeper) {
+        var fd = new FormData();
+        fd.append('id', String(wantVariant));
+        fd.append('quantity', '1');
+        fd.append('properties[' + BONUS_PROP + ']', wantVariant === GIFT_CARD_25 ? PROP_25 : PROP_20);
+        console.log('TDA GC GUARD: adding bonus card', wantVariant, '(archives=' + archives + ')');
+        var add = await originalFetch('/cart/add', { method: 'POST', body: fd });
+        if (add.ok) changed = true;
+      } else if (keeper && keeper.quantity > 1) {
+        /* Only one free card per order */
+        console.log('TDA GC GUARD: bonus card quantity', keeper.quantity, '— resetting to 1');
+        var fix = await post('/cart/change.js', { id: keeper.key, quantity: 1 });
+        if (fix.ok) changed = true;
+      }
+
+      if (changed) {
+        document.dispatchEvent(new CustomEvent('tda:giftcard-corrected', { detail: { archives: archives, variant: wantVariant } }));
+        if (RELOAD_AFTER_FIX) window.location.reload();
+      }
+    } catch (e) {
+      console.error('TDA GC GUARD: error', e);
+    } finally {
+      checking = false;
+    }
+  }
+
+  /* Watch every cart mutation made through fetch (Kaching + theme + our blocks) */
+  window.fetch = function() {
+    var args = Array.prototype.slice.call(arguments);
+    var u = args[0];
+    var urlStr = (typeof u === 'string') ? u : (u && u.url) ? u.url : '';
+    var p = originalFetch.apply(window, args);
+    if (urlStr && isCartMutation(urlStr)) {
+      p.then(function(){ scheduleCheck(); }, function(){});
+    }
+    return p;
+  };
+
+  /* Also watch XHR, in case the cart app uses it */
+  var origOpen = XMLHttpRequest.prototype.open;
+  XMLHttpRequest.prototype.open = function(method, url) {
+    try {
+      if (typeof url === 'string' && isCartMutation(url)) {
+        this.addEventListener('loadend', scheduleCheck);
+      }
+    } catch (e) {}
+    return origOpen.apply(this, arguments);
+  };
+
+  /* Run once on load (covers returning visitors with a stale cart) */
+  if (document.readyState === 'complete') scheduleCheck();
+  else window.addEventListener('load', scheduleCheck);
+
+  window.tdaGiftCardGuardCheck = checkCart;
+  console.log('TDA GC GUARD: Ready 🛡️ ($20 at 1 archive, $25 at ' + UPGRADE_AT + ')');
+})();
+</script>

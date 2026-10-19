@@ -1,0 +1,399 @@
+{%- comment -%}
+  The Day Archive — tda-pack-multi (CRO v4 theme only)
+
+  v6 — GIFT CARD LADDER
+  - 1 archive  → FREE $20 gift card, included from the moment the page loads
+  - 2+ archives → upgraded to a FREE $25 gift card (free shipping comes with it)
+
+  The reward row under the button is always "earned"; it swaps denomination
+  rather than unlocking. The card itself is added to the cart by the fetch
+  intercept below and zeroed by two Shopify automatic discounts:
+    "CRO v4 - FREE $20 Gift Card with 1 Archive"   (buy 1 archive  → $20 card 100% off)
+    "CRO v4 - FREE $25 Gift Card with 2 Archives"  (buy 2 archives → $25 card 100% off)
+
+  IDs
+  - Archive variant 48204546932891 (The Birth Day Archive Pack, $59.99)
+  - Gift Card $20 variant 49514465558683 · $25 variant 49852343779483
+  - Frame variant 48940258918555 (Frame your order™, $30)
+
+  snippets/tda-giftcard-guard.liquid keeps the cart honest if the shopper
+  edits quantities in the Kaching drawer.
+{%- endcomment -%}
+
+<div id="tda-pack-multi">
+<style>
+  #tda-pack-multi{margin:16px 0 0 0}
+
+  .tda-pm-pack{background:#EFF0F5;border:1.5px solid #1E3A5F;border-radius:8px;padding:12px 14px;margin-bottom:10px}
+  .tda-pm-pack-hdr{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px}
+  .tda-pm-pack-num{font-size:11px;font-weight:700;letter-spacing:.07em;text-transform:uppercase;color:#1E3A5F;opacity:.55}
+  .tda-pm-remove{background:none;border:none;padding:0;cursor:pointer;font-size:12px;color:#C72329;font-weight:600;font-family:inherit;line-height:1}
+  .tda-pm-remove:hover{opacity:.75}
+
+  .tda-pm-field{margin-bottom:10px}
+  .tda-pm-field:last-child{margin-bottom:0}
+  .tda-pm-label{display:block;font-size:13px;font-weight:700;color:#1E3A5F;margin-bottom:5px}
+  .tda-pm-req{color:#C72329}
+  .tda-pm-input{width:100%;padding:12px 14px;border:1px solid #D0D8E4;border-radius:6px;font-size:16px;color:#1E3A5F;background:#fff;outline:none;-webkit-appearance:none;transition:border-color .2s;box-sizing:border-box;font-family:inherit}
+  .tda-pm-input:focus{border-color:#1E3A5F}
+  .tda-pm-input::placeholder{color:#B0BCCF;font-weight:400}
+  .tda-pm-input.tda-pm-error{border-color:#C72329}
+
+  .tda-pm-add-btn{display:flex;align-items:center;gap:10px;width:100%;padding:12px 14px;background:transparent;border:1.5px dashed #1E3A5F;border-radius:8px;cursor:pointer;text-align:left;color:#1E3A5F;transition:all .2s;margin-bottom:0}
+  .tda-pm-add-btn:hover{background:#EFF0F5;border-style:solid}
+  .tda-pm-add-circle{width:26px;height:26px;background:#1E3A5F;border-radius:50%;display:flex;align-items:center;justify-content:center;color:#fff;font-size:18px;font-weight:300;line-height:1;flex-shrink:0}
+  .tda-pm-add-text{flex:1}
+  .tda-pm-add-title{font-size:14px;font-weight:700;color:#1E3A5F;display:block;margin-bottom:1px}
+  .tda-pm-add-sub{font-size:11px;color:#1E3A5F;opacity:.6;display:block}
+  .tda-pm-add-sub b{font-weight:700}
+  /* Badge sits on the right, stacked over two lines so the copy keeps its width */
+  .tda-pm-ship-badge{display:flex;flex-direction:column;align-items:center;gap:2px;background:#1E3A5F;color:#fff;font-size:9px;font-weight:700;padding:5px 8px;border-radius:3px;letter-spacing:.04em;line-height:1.25;text-align:center;flex-shrink:0;white-space:nowrap}
+
+  /* Gift card reward row — always earned, swaps denomination at 2 archives */
+  .tda-pm-reward{display:flex;align-items:center;gap:10px;margin-top:8px;padding:9px 12px;border-radius:8px;border:1.5px solid #1E3A5F;background:#EFF0F5;color:#1E3A5F;transition:all .25s ease}
+  .tda-pm-reward-img{width:56px;max-width:56px;height:auto;max-height:40px;object-fit:contain;border-radius:4px;flex-shrink:0;background:none;box-shadow:none}
+  .tda-pm-reward-tick{display:flex;width:18px;height:18px;border-radius:50%;background:#EF9F27;color:#1E3A5F;font-size:12px;font-weight:700;align-items:center;justify-content:center;flex-shrink:0}
+  .tda-pm-reward-text{flex:1;min-width:0}
+  .tda-pm-reward-title{display:block;font-size:13px;font-weight:700;line-height:1.25}
+  .tda-pm-reward-sub{display:block;font-size:11px;opacity:.75;line-height:1.35;margin-top:1px}
+  .tda-pm-reward-price{display:flex;flex-direction:column;align-items:flex-end;flex-shrink:0;line-height:1.1}
+  .tda-pm-reward-was{font-size:11px;text-decoration:line-through;opacity:.6}
+  .tda-pm-reward-now{font-size:14px;font-weight:700}
+  .tda-pm-reward-state{font-size:9px;font-weight:700;letter-spacing:.05em;text-transform:uppercase;margin-top:2px;opacity:.75}
+  .tda-pm-reward.is-upgraded .tda-pm-reward-state{color:#C72329;opacity:1}
+  @media (max-width:400px){
+    .tda-pm-reward-img{width:48px;max-width:48px}
+    .tda-pm-reward-title{font-size:12px}
+    .tda-pm-reward-sub{font-size:10px}
+  }
+</style>
+
+<!-- Extra packs render here -->
+<div id="tda-pm-packs"></div>
+
+<!-- Add button (hidden when at max) -->
+<button type="button" class="tda-pm-add-btn" id="tda-pm-add-btn">
+  <span class="tda-pm-add-circle">+</span>
+  <span class="tda-pm-add-text">
+    <span class="tda-pm-add-title" id="tda-pm-add-title">Add a 2nd Archive</span>
+    <span class="tda-pm-add-sub" id="tda-pm-add-sub">For someone else — upgrades to a <b>$25 gift card</b> + <b>free shipping</b></span>
+  </span>
+  <span class="tda-pm-ship-badge" id="tda-pm-badge">
+    <span>+ $25 GIFT CARD</span>
+    <span>+ FREE SHIPPING</span>
+  </span>
+</button>
+
+<!-- Gift card reward row -->
+<div class="tda-pm-reward" id="tda-pm-reward" aria-live="polite">
+  <img class="tda-pm-reward-img" src="https://cdn.shopify.com/s/files/1/0756/0688/4507/files/giftcardimage.png?v=1789339255" alt="The Day Archive gift card" loading="lazy">
+  <span class="tda-pm-reward-tick" aria-hidden="true">✓</span>
+  <span class="tda-pm-reward-text">
+    <span class="tda-pm-reward-title" id="tda-pm-reward-title">+ FREE $20 Gift Card</span>
+    <span class="tda-pm-reward-sub" id="tda-pm-reward-sub">Included with your order · emailed to you, no expiry</span>
+  </span>
+  <span class="tda-pm-reward-price">
+    <span class="tda-pm-reward-was" id="tda-pm-reward-was">$20.00</span>
+    <span class="tda-pm-reward-now">FREE</span>
+    <span class="tda-pm-reward-state" id="tda-pm-reward-state">Included</span>
+  </span>
+</div>
+
+
+<script>
+(function(){
+  const MAX = 6;
+  const FRAME_VARIANT_ID     = '48940258918555';
+  const ARCHIVE_VARIANT_IDS  = ['48204546932891'];  /* The Birth Day Archive Pack */
+  const GIFT_CARD_20         = '49514465558683';
+  const GIFT_CARD_25         = '49852343779483';
+  const GIFT_UPGRADE_PACKS   = 2;                   /* archives needed for the $25 card */
+  const GIFT_PROP_20         = 'Free $20 Gift Card - 1 Archive';
+  const GIFT_PROP_25         = 'Free $25 Gift Card - 2 Archives';
+
+  const packsContainer = document.getElementById('tda-pm-packs');
+  const addBtn         = document.getElementById('tda-pm-add-btn');
+  const addTitle       = document.getElementById('tda-pm-add-title');
+
+  /* packs = array of { id, name, bday } for packs 2-6 */
+  let packs = [];
+  let nextId = 2;
+
+  /* ── RENDER ── */
+  function render() {
+    packsContainer.innerHTML = '';
+
+    packs.forEach(function(pack) {
+      const div = document.createElement('div');
+      div.className = 'tda-pm-pack';
+      div.id = 'tda-pm-pack-' + pack.id;
+      div.innerHTML =
+        '<div class="tda-pm-pack-hdr">' +
+          '<span class="tda-pm-pack-num">Archive ' + pack.id + '</span>' +
+          '<button type="button" class="tda-pm-remove" data-id="' + pack.id + '">✕ Remove</button>' +
+        '</div>' +
+        '<div class="tda-pm-field">' +
+          '<label class="tda-pm-label" for="tda-pm-name-' + pack.id + '">Full Name for Personalisation <span class="tda-pm-req">*</span></label>' +
+          '<input type="text" id="tda-pm-name-' + pack.id + '" class="tda-pm-input" placeholder="Jane Stafford" autocomplete="off" data-id="' + pack.id + '" data-field="name">' +
+        '</div>' +
+        '<div class="tda-pm-field">' +
+          '<label class="tda-pm-label" for="tda-pm-bday-' + pack.id + '">Birthday <span class="tda-pm-req">*</span></label>' +
+          '<input type="text" id="tda-pm-bday-' + pack.id + '" class="tda-pm-input" placeholder="DD/MM/YYYY" maxlength="10" autocomplete="off" data-id="' + pack.id + '" data-field="bday">' +
+        '</div>';
+      packsContainer.appendChild(div);
+
+      /* Date auto-format */
+      const bdayInput = div.querySelector('[data-field="bday"]');
+      bdayInput.addEventListener('input', function() {
+        let v = this.value.replace(/\D/g, '');
+        if (v.length > 4) v = v.slice(0,2) + '/' + v.slice(2,4) + '/' + v.slice(4,8);
+        else if (v.length > 2) v = v.slice(0,2) + '/' + v.slice(2);
+        this.value = v;
+        syncPack(pack.id);
+      });
+
+      /* Sync name */
+      const nameInput = div.querySelector('[data-field="name"]');
+      nameInput.addEventListener('input', function() {
+        syncPack(pack.id);
+      });
+
+      /* Clear error on input */
+      div.querySelectorAll('.tda-pm-input').forEach(function(el) {
+        el.addEventListener('input', function() { this.classList.remove('tda-pm-error'); });
+      });
+
+      /* Restore values if re-rendering */
+      nameInput.value = pack.name || '';
+      bdayInput.value = pack.bday || '';
+
+      /* Remove button */
+      div.querySelector('.tda-pm-remove').addEventListener('click', function() {
+        removePack(parseInt(this.dataset.id));
+      });
+    });
+
+    updateAddBtn();
+  }
+
+  function syncPack(id) {
+    const pack = packs.find(function(p) { return p.id === id; });
+    if (!pack) return;
+    const nameEl = document.getElementById('tda-pm-name-' + id);
+    const bdayEl = document.getElementById('tda-pm-bday-' + id);
+    if (nameEl) pack.name = nameEl.value;
+    if (bdayEl) pack.bday = bdayEl.value;
+  }
+
+  function updateAddBtn() {
+    const total = 1 + packs.length;
+    if (total >= MAX) {
+      addBtn.style.display = 'none';
+    } else {
+      addBtn.style.display = 'flex';
+      const next = total + 1;
+      const ordinal = ['','','2nd','3rd','4th','5th','6th'][next] || next + 'th';
+      addTitle.textContent = 'Add a ' + ordinal + ' Archive';
+      const subEl = addBtn.querySelector('.tda-pm-add-sub');
+      const badgeEl = addBtn.querySelector('.tda-pm-ship-badge');
+      if (subEl) {
+        if (total === 1) {
+          subEl.innerHTML = 'For someone else — upgrades to a <b>$25 gift card</b> + <b>free shipping</b>';
+        } else {
+          subEl.textContent = 'For someone else — personalised separately';
+        }
+      }
+      if (badgeEl) badgeEl.style.display = (total === 1) ? '' : 'none';
+    }
+    updateReward();
+  }
+
+  /* ── GIFT CARD REWARD ROW ── */
+  function giftUpgraded() {
+    return (1 + packs.length) >= GIFT_UPGRADE_PACKS;
+  }
+  function giftVariantId() {
+    return giftUpgraded() ? GIFT_CARD_25 : GIFT_CARD_20;
+  }
+  function updateReward() {
+    const row   = document.getElementById('tda-pm-reward');
+    const title = document.getElementById('tda-pm-reward-title');
+    const sub   = document.getElementById('tda-pm-reward-sub');
+    const was   = document.getElementById('tda-pm-reward-was');
+    const state = document.getElementById('tda-pm-reward-state');
+    if (!row) return;
+    if (giftUpgraded()) {
+      row.classList.add('is-upgraded');
+      if (title) title.textContent = '+ FREE $25 Gift Card';
+      if (sub)   sub.textContent   = 'Upgraded — free shipping unlocked too · no expiry';
+      if (was)   was.textContent   = '$25.00';
+      if (state) state.textContent = 'Upgraded';
+    } else {
+      row.classList.remove('is-upgraded');
+      if (title) title.textContent = '+ FREE $20 Gift Card';
+      if (sub)   sub.textContent   = 'Included with your order · emailed to you, no expiry';
+      if (was)   was.textContent   = '$20.00';
+      if (state) state.textContent = 'Included';
+    }
+  }
+
+  /* ── ADD PACK ── */
+  addBtn.addEventListener('click', function() {
+    if (1 + packs.length >= MAX) return;
+    packs.push({ id: nextId++, name: '', bday: '' });
+    render();
+    /* Focus the new name field */
+    const lastPack = packs[packs.length - 1];
+    const nameField = document.getElementById('tda-pm-name-' + lastPack.id);
+    if (nameField) setTimeout(function() { nameField.focus(); }, 50);
+    console.log('TDA MULTI: Pack added, total:', 1 + packs.length, '| gift card:', giftVariantId());
+  });
+
+  /* ── REMOVE PACK ── */
+  function removePack(id) {
+    packs = packs.filter(function(p) { return p.id !== id; });
+    render();
+    console.log('TDA MULTI: Pack removed, total:', 1 + packs.length, '| gift card:', giftVariantId());
+  }
+
+  /* ── VALIDATE ── */
+  function validate() {
+    const dp = /^\d{2}\/\d{2}\/\d{4}$/;
+    for (var i = 0; i < packs.length; i++) {
+      var pack = packs[i];
+      /* Sync latest values */
+      syncPack(pack.id);
+      var nameEl = document.getElementById('tda-pm-name-' + pack.id);
+      var bdayEl = document.getElementById('tda-pm-bday-' + pack.id);
+
+      if (!pack.name || !pack.name.trim()) {
+        if (nameEl) { nameEl.classList.add('tda-pm-error'); nameEl.focus(); }
+        alert('Please enter the full name for Archive ' + pack.id + '.');
+        return false;
+      }
+      if (!dp.test((pack.bday || '').trim())) {
+        if (bdayEl) { bdayEl.classList.add('tda-pm-error'); bdayEl.focus(); }
+        alert('Please enter a valid birthday for Archive ' + pack.id + ' (DD/MM/YYYY).');
+        return false;
+      }
+    }
+    return true;
+  }
+
+  /* ── FETCH INTERCEPT ──
+     Runs for every /cart/add. It only takes over when the request is adding an
+     ARCHIVE, so the gift card and frame requests (including the frame block's
+     parallel add, which passes back through this wrapper) fall straight through
+     and can never trigger a second gift card. */
+  const originalFetch = window.fetch;
+  window.fetch = async function() {
+    var args = Array.prototype.slice.call(arguments);
+    var url = args[0];
+    var options = args[1];
+    var urlStr = (typeof url === 'string') ? url : (url && url.url) ? url.url : '';
+
+    if (urlStr && (urlStr.includes('/cart/add') || urlStr.includes('cart/add.js'))) {
+      var body = options && options.body;
+
+      if (body instanceof FormData && ARCHIVE_VARIANT_IDS.indexOf(String(body.get('id'))) !== -1) {
+
+        if (!validate()) {
+          return new Response(JSON.stringify({ status: 422, message: 'Pack details missing' }), {
+            status: 422,
+            headers: { 'Content-Type': 'application/json' }
+          });
+        }
+
+        console.log('TDA MULTI: Intercepted — archives:', 1 + packs.length);
+
+        try {
+          var mainId = body.get('id');
+
+          /* Add Pack 1 (the original request) first */
+          var res1 = await originalFetch(url, options);
+          console.log('TDA MULTI: Pack 1 response:', res1.status);
+
+          if (!res1.ok) {
+            console.error('TDA MULTI: Pack 1 failed — nothing else added');
+            return res1;
+          }
+
+          /* Add each extra pack sequentially */
+          var lastRes = res1;
+          var packsAdded = 1;
+          for (var i = 0; i < packs.length; i++) {
+            var pack = packs[i];
+            var fd = new FormData();
+            fd.append('id', mainId);
+            fd.append('quantity', '1');
+            fd.append('properties[Full Name]', pack.name.trim());
+            fd.append('properties[Birthday]', pack.bday.trim());
+            fd.append('properties[_Pack]', pack.id + ' of ' + (1 + packs.length));
+
+            var res = await originalFetch(url, { method: 'POST', body: fd });
+            console.log('TDA MULTI: Pack', pack.id, 'response:', res.status);
+            if (res.ok) packsAdded++;
+            lastRes = res;
+          }
+
+          /* Add the gift card: $20 with one archive, $25 with two or more.
+             Non-fatal — if it fails the archives still go through. */
+          try {
+            var upgraded = packsAdded >= GIFT_UPGRADE_PACKS;
+            var gcFD = new FormData();
+            gcFD.append('id', upgraded ? GIFT_CARD_25 : GIFT_CARD_20);
+            gcFD.append('quantity', '1');
+            gcFD.append('properties[_Bonus]', upgraded ? GIFT_PROP_25 : GIFT_PROP_20);
+            var resGC = await originalFetch(url, { method: 'POST', body: gcFD });
+            console.log('TDA MULTI: Gift card', upgraded ? '$25' : '$20', 'response:', resGC.status);
+            if (!resGC.ok) {
+              console.error('TDA MULTI: Gift card add failed (order continues without it) — check the Gift Card product is on the Online Store channel');
+            }
+          } catch (gcErr) {
+            console.error('TDA MULTI: Gift card add error (non-fatal):', gcErr);
+          }
+
+          /* Add frame(s) if the frame checkbox is ticked and we have extra packs.
+             With a single archive the frame block adds its own frame in parallel. */
+          var frameChk = document.getElementById('tdaFrameCheckbox');
+          if (frameChk && frameChk.checked && packs.length > 0) {
+            var fqSelected = document.querySelector('input[name="tda-frame-qty"]:checked');
+            var frameQty = fqSelected ? parseInt(fqSelected.value) : 1;
+
+            console.log('TDA MULTI: Adding', frameQty, 'frame(s)');
+
+            var frameFD = new FormData();
+            frameFD.append('id', FRAME_VARIANT_ID);
+            frameFD.append('quantity', String(frameQty));
+            frameFD.append('properties[_Frame Upsell]', 'Product Page - 25% OFF $40');
+
+            var resFrame = await originalFetch(url, { method: 'POST', body: frameFD });
+            console.log('TDA MULTI: Frame response:', resFrame.status);
+          }
+
+          console.log('TDA MULTI: ✅ Done');
+          return lastRes;
+
+        } catch(err) {
+          console.error('TDA MULTI: Error:', err);
+          return originalFetch.apply(window, args);
+        }
+      }
+    }
+
+    return originalFetch.apply(window, args);
+  };
+
+  /* ── EXPOSE FOR BLOCK 2 (frame qty picker) AND DEBUGGING ── */
+  window.tdaGetPackCount = function() {
+    return 1 + packs.length;
+  };
+  window.tdaGiftCardVariant = giftVariantId;
+
+  /* ── INIT ── */
+  render();
+  console.log('TDA MULTI v6: Ready ✅ ($20 card included, $25 at ' + GIFT_UPGRADE_PACKS + ' archives)');
+
+})();
+</script>
+</div>
