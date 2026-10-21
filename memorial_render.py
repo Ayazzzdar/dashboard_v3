@@ -104,10 +104,13 @@ def _fill(template_html, data):
         out = out.replace("{{" + key + "}}", str(data.get(key, "")))
     # absolute stylesheet path
     out = out.replace('href="style.css"', f'href="file://{STYLE_PATH}"')
-    # replace the Google Fonts <link> (if present) with local @font-face
+    # replace the Google Fonts <link> (if present) with local @font-face, and
+    # force a transparent page background so the output is ink-only like the
+    # birthday pack (prints onto parchment stock; the cream is design-reference only).
     import re as _re
     out = _re.sub(r'<link href="https://fonts\.googleapis\.com[^"]*" rel="stylesheet">', "", out)
-    out = out.replace("</head>", f"<style>\n{_font_css()}</style>\n</head>", 1)
+    transparent = "html,body{background:transparent !important}body::before{display:none !important}"
+    out = out.replace("</head>", f"<style>\n{_font_css()}{transparent}</style>\n</head>", 1)
     return out
 
 
@@ -126,6 +129,7 @@ def render_page(page_num, data, out_path, chrome=None, timeout=60, scale=2):
     try:
         cmd = [
             chrome, "--headless=new", "--disable-gpu", "--no-sandbox", "--hide-scrollbars",
+            "--default-background-color=00000000",  # transparent screenshot (ink only)
             f"--force-device-scale-factor={scale}", f"--window-size={PAGE_W},{PAGE_H}",
             "--virtual-time-budget=8000", f"--screenshot={out_path}", f"file://{tmp_html}",
         ]
