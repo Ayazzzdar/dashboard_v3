@@ -101,7 +101,11 @@ def _fill(template_html, data):
     """Replace {{TOKEN}} with values; wire asset/style paths to absolute file URLs;
     swap the remote Google-Fonts link for local @font-face."""
     out = template_html
+    # resolve every asset reference to an absolute path, whether written as the
+    # {{ASSETS}} token (page 1) or a relative "assets/..." path (pages 2-5).
     out = out.replace("{{ASSETS}}", ASSETS_DIR)
+    out = out.replace('src="assets/', f'src="{ASSETS_DIR}/')
+    out = out.replace("src='assets/", f"src='{ASSETS_DIR}/")
     for key in TOKENS:
         out = out.replace("{{" + key + "}}", str(data.get(key, "")))
     # absolute stylesheet path
