@@ -22,6 +22,8 @@ import shutil
 import subprocess
 import tempfile
 
+from PIL import Image
+
 _HERE = os.path.dirname(os.path.abspath(__file__))
 TPL_DIR = os.path.join(_HERE, "memorial", "templates")
 ASSETS_DIR = os.path.join(_HERE, "memorial", "assets")
@@ -126,11 +128,15 @@ def render_page(page_num, data, out_path, chrome=None, timeout=60, scale=2):
     with tempfile.NamedTemporaryFile("w", suffix=".html", dir=TPL_DIR, delete=False, encoding="utf-8") as f:
         tmp_html = f.name
         f.write(filled)
+    # Transparent screenshots clip the last ~50px of the window, so render a
+    # taller window and crop back to the exact page size (the clip falls in the
+    # discarded padding; the frame at y=1944 is preserved).
+    pad = 160
     try:
         cmd = [
             chrome, "--headless=new", "--disable-gpu", "--no-sandbox", "--hide-scrollbars",
             "--default-background-color=00000000",  # transparent screenshot (ink only)
-            f"--force-device-scale-factor={scale}", f"--window-size={PAGE_W},{PAGE_H}",
+            f"--force-device-scale-factor={scale}", f"--window-size={PAGE_W},{PAGE_H + pad}",
             "--virtual-time-budget=8000", f"--screenshot={out_path}", f"file://{tmp_html}",
         ]
         subprocess.run(cmd, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL, timeout=timeout)
@@ -141,6 +147,11 @@ def render_page(page_num, data, out_path, chrome=None, timeout=60, scale=2):
             pass
     if not os.path.exists(out_path):
         raise RuntimeError(f"Chromium produced no output for page {page_num}")
+    # crop off the padding -> exact A-series page at the chosen scale
+    target = (int(PAGE_W * scale), int(PAGE_H * scale))
+    im = Image.open(out_path)
+    if im.size != target:
+        im.crop((0, 0, target[0], target[1])).save(out_path)
     return out_path
 
 
