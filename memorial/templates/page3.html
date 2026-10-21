@@ -1,0 +1,119 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>The Economy</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;0,600;1,400&family=Cormorant+Garamond:ital,wght@0,500;0,600;0,700;1,500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+<style>
+  .page { padding-bottom: 136px; }
+  h1 { margin-top: 124px; font-size: 96px; font-weight: 400; letter-spacing: .05em; line-height: 1; text-align: center; }
+  .yr { margin-top: 18px; font-size: 104px; line-height: 1; }
+  .ornrule { margin-top: 28px; }
+
+  .body { width: 1140px; flex: 1; min-height: 0; display: grid; grid-template-columns: 1fr 330px; column-gap: 50px; margin-top: 40px; }
+  .left { display: flex; flex-direction: column; justify-content: space-between; }
+
+  .stat .cap { font-size: 26px; }
+  .stat .v { font-size: 80px; line-height: 1.05; margin-top: 4px; }
+  .stat .v small { font-family: var(--book); font-style: italic; font-size: 32px; color: var(--soft); margin-left: 10px; }
+  .stat + .stat { margin-top: 30px; }
+
+  .medal { width: 330px; height: 330px; border-radius: 50%; border: 1.5px solid var(--rule); position: relative; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; }
+  .medal::after { content: ""; position: absolute; inset: 9px; border-radius: 50%; border: .75px solid var(--rule); }
+  .medal img { width: 190px; height: 118px; }
+  .medal .cap { font-size: 18px; line-height: 1.35; margin-top: 12px; }
+  .medal .v { font-size: 66px; line-height: 1; margin-top: 8px; }
+
+  .line { display: grid; grid-template-columns: 250px 1fr; column-gap: 40px; align-items: center; }
+  .line .art { height: 250px; display: flex; align-items: center; justify-content: center; }
+  .line .art img { max-width: 250px; max-height: 246px; }
+  .line .cap { font-size: 28px; }
+  .line .v { font-size: 88px; line-height: 1.05; margin-top: 4px; }
+
+  .tokens { display: flex; gap: 44px; align-items: flex-end; }
+  .token { text-align: center; }
+  .token svg { display: block; height: auto; }
+  .token.stamp svg { width: 236px; }
+  .token.ticket svg { width: 470px; }
+  .token .lbl { font-size: 19px; margin-top: 16px; }
+  .token .v { font-size: 48px; }
+
+  .prices { display: flex; flex-direction: column; justify-content: space-around; padding: 26px 14px; text-align: center; }
+  .prices .item img { width: 150px; height: 112px; margin: 0 auto 10px; }
+  .prices .cap { font-size: 18px; letter-spacing: .2em; }
+  .prices .p { font-size: 36px; margin-top: 2px; line-height: 1.1; }
+  .topright { display: flex; flex-direction: column; gap: 36px; }
+</style>
+</head>
+<body>
+  <div class="frame"></div>
+  <div class="corner tl"></div><div class="corner tr"></div>
+  <div class="corner bl"></div><div class="corner br"></div>
+
+  <div class="page">
+    <h1>THE ECONOMY IN</h1>
+    <div class="yr lining">{{YEAR}}</div>
+    <div class="ornrule"><i></i></div>
+
+    <div class="body">
+      <div class="left">
+        <div>
+          <div class="stat">
+            <div class="cap">Average Salary</div>
+            <div class="v lining">{{SALARY}}<small>per year</small></div>
+          </div>
+          <div class="stat">
+            <div class="cap">Average House Would Cost</div>
+            <div class="v lining">{{YEARS_WAGES}}</div>
+          </div>
+        </div>
+
+        <div class="line">
+          <div class="art"><img class="ico" src="assets/pump.png" alt=""></div>
+          <div><div class="cap">Petrol (per litre)</div><div class="v lining">{{PETROL}}</div></div>
+        </div>
+        <div class="line">
+          <div class="art"><img class="ico" src="assets/inflation.png" alt=""></div>
+          <div><div class="cap">Inflation Rate</div><div class="v lining">{{INFLATION}}</div></div>
+        </div>
+
+        <div class="tokens">
+          <div class="token stamp">
+            <svg width="196" height="244" viewBox="-2 -2 196 244">
+  <path d="M0,0 l3,0 a5,5 0 0 0 10,0 l3,0 l3,0 a5,5 0 0 0 10,0 l3,0 l3,0 a5,5 0 0 0 10,0 l3,0 l3,0 a5,5 0 0 0 10,0 l3,0 l3,0 a5,5 0 0 0 10,0 l3,0 l3,0 a5,5 0 0 0 10,0 l3,0 l3,0 a5,5 0 0 0 10,0 l3,0 l3,0 a5,5 0 0 0 10,0 l3,0 l3,0 a5,5 0 0 0 10,0 l3,0 l3,0 a5,5 0 0 0 10,0 l3,0 l3,0 a5,5 0 0 0 10,0 l3,0 l3,0 a5,5 0 0 0 10,0 l3,0 l0,3 a5,5 0 0 0 0,10 l0,3 l0,3 a5,5 0 0 0 0,10 l0,3 l0,3 a5,5 0 0 0 0,10 l0,3 l0,3 a5,5 0 0 0 0,10 l0,3 l0,3 a5,5 0 0 0 0,10 l0,3 l0,3 a5,5 0 0 0 0,10 l0,3 l0,3 a5,5 0 0 0 0,10 l0,3 l0,3 a5,5 0 0 0 0,10 l0,3 l0,3 a5,5 0 0 0 0,10 l0,3 l0,3 a5,5 0 0 0 0,10 l0,3 l0,3 a5,5 0 0 0 0,10 l0,3 l0,3 a5,5 0 0 0 0,10 l0,3 l0,3 a5,5 0 0 0 0,10 l0,3 l0,3 a5,5 0 0 0 0,10 l0,3 l0,3 a5,5 0 0 0 0,10 l0,3 l-3,0 a5,5 0 0 0 -10,0 l-3,0 l-3,0 a5,5 0 0 0 -10,0 l-3,0 l-3,0 a5,5 0 0 0 -10,0 l-3,0 l-3,0 a5,5 0 0 0 -10,0 l-3,0 l-3,0 a5,5 0 0 0 -10,0 l-3,0 l-3,0 a5,5 0 0 0 -10,0 l-3,0 l-3,0 a5,5 0 0 0 -10,0 l-3,0 l-3,0 a5,5 0 0 0 -10,0 l-3,0 l-3,0 a5,5 0 0 0 -10,0 l-3,0 l-3,0 a5,5 0 0 0 -10,0 l-3,0 l-3,0 a5,5 0 0 0 -10,0 l-3,0 l-3,0 a5,5 0 0 0 -10,0 l-3,0 l0,-3 a5,5 0 0 0 0,-10 l0,-3 l0,-3 a5,5 0 0 0 0,-10 l0,-3 l0,-3 a5,5 0 0 0 0,-10 l0,-3 l0,-3 a5,5 0 0 0 0,-10 l0,-3 l0,-3 a5,5 0 0 0 0,-10 l0,-3 l0,-3 a5,5 0 0 0 0,-10 l0,-3 l0,-3 a5,5 0 0 0 0,-10 l0,-3 l0,-3 a5,5 0 0 0 0,-10 l0,-3 l0,-3 a5,5 0 0 0 0,-10 l0,-3 l0,-3 a5,5 0 0 0 0,-10 l0,-3 l0,-3 a5,5 0 0 0 0,-10 l0,-3 l0,-3 a5,5 0 0 0 0,-10 l0,-3 l0,-3 a5,5 0 0 0 0,-10 l0,-3 l0,-3 a5,5 0 0 0 0,-10 l0,-3 l0,-3 a5,5 0 0 0 0,-10 l0,-3 Z" fill="none" stroke="#2a2622" stroke-width="1.6"/>
+  <rect x="16" y="16" width="160" height="208" fill="none" stroke="#2a2622" stroke-width="1.1"/>
+  <rect x="22" y="22" width="148" height="196" fill="none" stroke="#2a2622" stroke-width=".6"/>
+  <text x="96.0" y="138.0" text-anchor="middle" font-family="Playfair Display" font-size="50" fill="#1b1815" style="font-variant-numeric: lining-nums">{{STAMP}}</text>
+</svg>
+            <div class="cap lbl">Postage Stamp</div>
+          </div>
+          <div class="token ticket">
+            <svg width="404" height="220" viewBox="-2 -2 404 220">
+  <path d="M24,0 L376,0 A24,24 0 0 0 400,24 L400,88.0 A20,20 0 0 0 400,128.0 L400,192 A24,24 0 0 0 376,216 L24,216 A24,24 0 0 0 0,192 L0,128.0 A20,20 0 0 0 0,88.0 L0,24 A24,24 0 0 0 24,0 Z" fill="none" stroke="#2a2622" stroke-width="1.6"/>
+  <rect x="36" y="20" width="328" height="176" fill="none" stroke="#2a2622" stroke-width=".8" stroke-dasharray="5 5"/>
+  <text x="200.0" y="76" text-anchor="middle" font-family="Cormorant Garamond" font-weight="600" font-size="17" letter-spacing="5" fill="#1b1815">ADMIT ONE</text>
+  <text x="200.0" y="150" text-anchor="middle" font-family="Playfair Display" font-size="64" fill="#1b1815" style="font-variant-numeric: lining-nums">{{CINEMA}}</text>
+</svg>
+            <div class="cap lbl">Cinema Ticket</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="topright">
+        <div class="medal">
+          <img class="ico" src="assets/chocolate.png" alt="">
+          <div class="cap">Price of a<br>Cadbury Bar</div>
+          <div class="v lining">{{CADBURY}}</div>
+        </div>
+        <div class="box prices" style="flex:1">
+          <div class="item"><img class="ico" src="assets/house.png" alt=""><div class="cap">Average House</div><div class="p lining">{{AVG_HOUSE}}</div></div>
+          <div class="item"><img class="ico" src="assets/milk.png" alt=""><div class="cap">Milk (1L)</div><div class="p lining">{{MILK}}</div></div>
+          <div class="item"><img class="ico" src="assets/bread.png" alt=""><div class="cap">Bread (Loaf)</div><div class="p lining">{{BREAD}}</div></div>
+          <div class="item"><img class="ico" src="assets/eggs.png" alt=""><div class="cap">Dozen Eggs</div><div class="p lining">{{EGGS}}</div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</body>
+</html>

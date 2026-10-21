@@ -20,6 +20,12 @@ from settings_manager_v2 import (
 )
 from lookup_tables import resolve_lookup_fields, get_number1_song_fallback
 from png_export import render_png_section
+try:
+    from memorial_section import render_memorial_section
+    _MEMORIAL_OK = True
+except Exception as _mem_e:  # memorial module is optional; degrade gracefully
+    _MEMORIAL_OK = False
+    _MEMORIAL_ERR = _mem_e
 
 # Page configuration
 st.set_page_config(
@@ -1711,8 +1717,17 @@ def main():
         return
     
     # Main tabs
-    tab1, tab2, tab3, tab4 = st.tabs(["📋 Orders", "⚙️ Processing", "📊 History", "❌ Errors"])
-    
+    tab1, tab2, tab3, tab4, tab5 = st.tabs(["📋 Orders", "⚙️ Processing", "📊 History", "❌ Errors", "🕊️ Memorial"])
+
+    # ========================================================================
+    # TAB 5: MEMORIAL PACK ("On the Day You Passed")
+    # ========================================================================
+    with tab5:
+        if _MEMORIAL_OK:
+            render_memorial_section()
+        else:
+            st.error(f"Memorial module unavailable: {_MEMORIAL_ERR}")
+
     # ========================================================================
     # TAB 1: ORDERS
     # ========================================================================

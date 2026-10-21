@@ -1,0 +1,232 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>On the Day You Passed</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;0,600;1,400&family=Cormorant+Garamond:ital,wght@0,500;0,600;0,700;1,500&family=Tinos&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+<style>
+  .page { padding-bottom: 128px; }
+  .head { margin-top: 112px; text-align: center; }
+  .name { font-size: 78px; font-weight: 400; letter-spacing: .03em; line-height: 1; max-width: 1180px; margin: 0 auto; }
+  .date { margin-top: 14px; font-family: var(--book); font-weight: 500; font-size: 42px; letter-spacing: .04em; }
+  .date sup { font-size: .55em; }
+
+  .mast { width: 1180px; border-top: 3px solid var(--rule); border-bottom: 1px solid var(--rule); height: 7px; margin-top: 22px; }
+  .mast.under { margin-top: 0; }
+  .title { font-size: 70px; font-weight: 400; letter-spacing: .05em; line-height: 1; padding: 20px 0 18px; }
+
+  .cols { width: 1180px; display: grid; grid-template-columns: 360px 500px 260px; column-gap: 30px; flex: 1; min-height: 0; }
+  .col { display: flex; flex-direction: column; }
+  .left { border-right: 1.25px solid var(--rule); padding-right: 30px; justify-content: space-between; }
+  .mid { padding-top: 30px; }
+
+  /* left column */
+  .sec { text-align: center; padding: 22px 0; border-bottom: 1px solid var(--rule); }
+  .sec:last-child { border-bottom: 0; }
+  .medal { width: 188px; height: 188px; border-radius: 50%; border: 1.5px solid var(--rule); margin: 0 auto; position: relative; display: flex; flex-direction: column; align-items: center; justify-content: center; }
+  .medal::after { content: ""; position: absolute; inset: 7px; border-radius: 50%; border: .75px solid var(--rule); }
+  .medal .cap { font-size: 15px; letter-spacing: .2em; line-height: 1.25; }
+  .medal img { width: 124px; height: 88px; margin-top: 6px; }
+  .years { margin-top: 14px; font-size: 46px; }
+  .age { font-family: var(--book); font-style: italic; font-size: 30px; color: var(--soft); }
+
+  .office img { width: 150px; height: 112px; margin: 0 auto 10px; }
+  .office .cap { font-size: 21px; }
+  .office .who { font-size: 36px; margin-top: 4px; }
+
+  .salary .cap { font-size: 22px; margin-bottom: 16px; }
+  .salary .box { padding: 22px 0 18px; width: 290px; margin: 0 auto; }
+  .salary .amt { font-size: 62px; line-height: 1; }
+  .salary .per { font-family: var(--book); font-style: italic; font-size: 26px; color: var(--soft); }
+
+  /* middle column */
+  .h-sec { font-size: 21px; margin-bottom: 14px; }
+  .remembered p { font-family: var(--book); font-size: 31px; line-height: 1.35; }
+  .remembered b { font-weight: 700; }
+  .thin { border-top: 1px solid var(--rule); margin: 22px 0; }
+  .news-h { text-align: center; font-size: 46px; letter-spacing: .05em; }
+  .news-h + .ornrule { width: 300px; margin: 8px auto 22px; }
+  .news { padding: 24px 30px; }
+  .news p { font-family: var(--book); font-size: 27px; line-height: 1.3; }
+  .news p + p { margin-top: 12px; padding-top: 12px; border-top: .6px solid rgba(42,38,34,.35); }
+  .facts p { font-family: var(--book); font-size: 26px; line-height: 1.3; margin-bottom: 9px; }
+  .facts b { font-weight: 700; }
+  .facts .gap { margin-top: 20px; }
+  .pop { display: grid; grid-template-columns: 1fr 1fr; gap: 22px; margin-top: auto; margin-bottom: 0; }
+  .pop .box { text-align: center; padding: 18px 10px 20px; }
+  .pop img { width: 150px; height: 118px; margin: 0 auto 12px; }
+  .pop .n { font-size: 36px; line-height: 1; }
+  .pop .cap { font-size: 15px; letter-spacing: .18em; margin-top: 10px; }
+
+  /* right column */
+  .right { padding-top: 30px; gap: 22px; min-height: 0; }
+  .right .box { text-align: center; padding: 22px 14px; }
+  .flower .cap { font-size: 17px; line-height: 1.35; }
+  .flower img { width: 120px; height: 130px; margin: 10px auto 6px; }
+  .flower .f { font-size: 46px; line-height: 1; }
+  .single img { width: 74px; height: 74px; margin: 0 auto 10px; }
+  .single .cap { font-size: 18px; }
+  .single .song { font-size: 32px; font-style: italic; margin-top: 8px; line-height: 1.1; }
+  .single .artist { font-family: var(--book); font-size: 25px; margin-top: 4px; }
+  .prices { flex: 1; min-height: 0; padding: 18px 14px !important; display: flex; flex-direction: column; justify-content: space-around; }
+  .prices .item img { width: 104px; height: 70px; margin: 0 auto 6px; }
+  /* certificate of authenticity: red foil seal drawn to match the original pack's seal */
+  .seal { flex: none; width: 236px; height: 236px; margin: 0 auto;
+          filter: drop-shadow(1px 2px 2px rgba(80,10,10,.25)); }
+  .seal svg { width: 100%; height: 100%; display: block; }
+  .prices .cap { font-size: 16px; letter-spacing: .18em; }
+  .prices .p { font-size: 30px; margin-top: 2px; line-height: 1.1; }
+</style>
+</head>
+<body>
+  <div class="frame"></div>
+  <div class="corner tl"></div><div class="corner tr"></div>
+  <div class="corner bl"></div><div class="corner br"></div>
+
+  <div class="page">
+    <div class="head">
+      <div class="name">{{NAME}}</div>
+      <div class="date">{{DATE_LINE}}</div>
+    </div>
+    <div class="mast"></div>
+    <div class="title">ON THE DAY YOU PASSED</div>
+    <div class="mast under"></div>
+
+    <div class="cols">
+      <div class="col left">
+        <div class="sec">
+          <div class="medal">
+            <div class="cap">In Loving<br>Memory</div>
+            <img class="ico" src="{{ASSETS}}/dove.png" alt="">
+          </div>
+          <div class="years lining">{{LIFESPAN}}</div>
+          <div class="age">{{AGE}}</div>
+        </div>
+        <div class="sec office">
+          <img class="ico" src="{{ASSETS}}/flag.png" alt="">
+          <div class="cap">Prime Minister</div>
+          <div class="who">{{PM}}</div>
+        </div>
+        <div class="sec office">
+          <img class="ico" src="{{ASSETS}}/flag.png" alt="">
+          <div class="cap">Incoming PM</div>
+          <div class="who">{{INCOMING_PM}}</div>
+        </div>
+        <div class="sec office">
+          <img class="ico" src="{{ASSETS}}/crown.png" alt="">
+          <div class="cap">British Monarch</div>
+          <div class="who">{{MONARCH}}</div>
+        </div>
+        <div class="sec salary">
+          <div class="cap">Average Salary</div>
+          <div class="box">
+            <div class="amt lining">{{SALARY}}</div>
+            <div class="per">per year</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="col mid">
+        <div class="remembered">
+          <div class="cap h-sec">Remembered on this day</div>
+          <p><b>{{REM1_NAME}}</b> · {{REM1_ROLE}}</p>
+          <p><b>{{REM2_NAME}}</b> · {{REM2_ROLE}}</p>
+          <p><b>{{REM3_NAME}}</b> · {{REM3_ROLE}}</p>
+        </div>
+        <div class="thin"></div>
+        <div class="news-h">IN THE NEWS</div>
+        <div class="ornrule"><i></i></div>
+        <div class="box news">
+          <p>{{NEWS1}}</p>
+          <p>{{NEWS2}}</p>
+          <p>{{NEWS3}}</p>
+        </div>
+        <div class="thin"></div>
+        <div class="facts">
+          <p><b>NRL Winner:</b> {{NRL}}</p>
+          <p><b>AFL Winner:</b> {{AFL}}</p>
+          <p class="gap"><b>Best Actor:</b> {{BEST_ACTOR}}</p>
+          <p><b>Best Actress:</b> {{BEST_ACTRESS}}</p>
+          <p class="gap"><b>Bathurst 1000 Winners:</b> {{BATHURST}}</p>
+          <p><b>Australian Open Winners:</b> {{AUSOPEN}}</p>
+        </div>
+        <div class="pop">
+          <div class="box">
+            <img class="ico" src="{{ASSETS}}/globe.png" alt="">
+            <div class="n lining">{{WORLD_POP}}</div>
+            <div class="cap">World Population</div>
+          </div>
+          <div class="box">
+            <img class="ico" src="{{ASSETS}}/australia.png" alt="">
+            <div class="n lining">{{AUS_POP}}</div>
+            <div class="cap">Australia</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="col right">
+        <div class="box flower">
+          <div class="cap">Flower of<br>Remembrance</div>
+          <img class="ico" src="{{ASSETS}}/{{FLOWER_IMG}}" alt="">
+          <div class="f">{{FLOWER_NAME}}</div>
+        </div>
+        <div class="box single">
+          <img class="ico" src="{{ASSETS}}/record.png" alt="">
+          <div class="cap">#1 Single</div>
+          <div class="song">{{SONG}}</div>
+          <div class="artist">{{ARTIST}}</div>
+        </div>
+        <div class="box prices">
+          <div class="item"><img class="ico" src="{{ASSETS}}/house.png" alt=""><div class="cap">Average House</div><div class="p lining">{{AVG_HOUSE}}</div></div>
+          <div class="item"><img class="ico" src="{{ASSETS}}/milk.png" alt=""><div class="cap">Milk (1L)</div><div class="p lining">{{MILK}}</div></div>
+          <div class="item"><img class="ico" src="{{ASSETS}}/bread.png" alt=""><div class="cap">Bread (Loaf)</div><div class="p lining">{{BREAD}}</div></div>
+          <div class="item"><img class="ico" src="{{ASSETS}}/eggs.png" alt=""><div class="cap">Dozen Eggs</div><div class="p lining">{{EGGS}}</div></div>
+        </div>
+        <div class="seal">
+          <svg viewBox="0 0 240 240">
+            <defs>
+              <linearGradient id="sealRed" x1="0.15" y1="0.9" x2="0.85" y2="0.1">
+                <stop offset="0" stop-color="#c10e13"/>
+                <stop offset=".28" stop-color="#b3070c"/>
+                <stop offset=".42" stop-color="#d9181d"/>
+                <stop offset=".6" stop-color="#ef2930"/>
+                <stop offset=".78" stop-color="#e21e24"/>
+                <stop offset="1" stop-color="#cc161b"/>
+              </linearGradient>
+              <radialGradient id="sealGlow" cx="58%" cy="40%" r="55%">
+                <stop offset="0" stop-color="#ff5a5a" stop-opacity=".28"/>
+                <stop offset="1" stop-color="#ff5a5a" stop-opacity="0"/>
+              </radialGradient>
+              <path id="sealTop" d="M 37.31,150.10 A 88,88 0 1 1 202.69,150.10"/>
+            </defs>
+            <polygon points="120.00,2.00 127.23,14.25 136.07,3.10 141.57,16.22 151.84,6.38 155.50,20.12 167.01,11.77 168.77,25.88 181.31,19.18 181.13,33.40 194.47,28.47 192.35,42.53 206.24,39.46 202.23,53.10 216.40,51.95 210.57,64.92 224.77,65.71 217.22,77.77 231.19,80.48 222.07,91.40 235.53,95.99 225.01,105.57 237.72,111.95 226.00,120.00 237.72,128.05 225.01,134.43 235.53,144.01 222.07,148.60 231.19,159.52 217.22,162.23 224.77,174.29 210.57,175.08 216.40,188.05 202.23,186.90 206.24,200.54 192.35,197.47 194.47,211.53 181.13,206.60 181.31,220.82 168.77,214.12 167.01,228.23 155.50,219.88 151.84,233.62 141.57,223.78 136.07,236.90 127.23,225.75 120.00,238.00 112.77,225.75 103.93,236.90 98.43,223.78 88.16,233.62 84.50,219.88 72.99,228.23 71.23,214.12 58.69,220.82 58.87,206.60 45.53,211.53 47.65,197.47 33.76,200.54 37.77,186.90 23.60,188.05 29.43,175.08 15.23,174.29 22.78,162.23 8.81,159.52 17.93,148.60 4.47,144.01 14.99,134.43 2.28,128.05 14.00,120.00 2.28,111.95 14.99,105.57 4.47,95.99 17.93,91.40 8.81,80.48 22.78,77.77 15.23,65.71 29.43,64.92 23.60,51.95 37.77,53.10 33.76,39.46 47.65,42.53 45.53,28.47 58.87,33.40 58.69,19.18 71.23,25.88 72.99,11.77 84.50,20.12 88.16,6.38 98.43,16.22 103.93,3.10 112.77,14.25" fill="url(#sealRed)"/>
+            <polygon points="120.00,2.00 127.23,14.25 136.07,3.10 141.57,16.22 151.84,6.38 155.50,20.12 167.01,11.77 168.77,25.88 181.31,19.18 181.13,33.40 194.47,28.47 192.35,42.53 206.24,39.46 202.23,53.10 216.40,51.95 210.57,64.92 224.77,65.71 217.22,77.77 231.19,80.48 222.07,91.40 235.53,95.99 225.01,105.57 237.72,111.95 226.00,120.00 237.72,128.05 225.01,134.43 235.53,144.01 222.07,148.60 231.19,159.52 217.22,162.23 224.77,174.29 210.57,175.08 216.40,188.05 202.23,186.90 206.24,200.54 192.35,197.47 194.47,211.53 181.13,206.60 181.31,220.82 168.77,214.12 167.01,228.23 155.50,219.88 151.84,233.62 141.57,223.78 136.07,236.90 127.23,225.75 120.00,238.00 112.77,225.75 103.93,236.90 98.43,223.78 88.16,233.62 84.50,219.88 72.99,228.23 71.23,214.12 58.69,220.82 58.87,206.60 45.53,211.53 47.65,197.47 33.76,200.54 37.77,186.90 23.60,188.05 29.43,175.08 15.23,174.29 22.78,162.23 8.81,159.52 17.93,148.60 4.47,144.01 14.99,134.43 2.28,128.05 14.00,120.00 2.28,111.95 14.99,105.57 4.47,95.99 17.93,91.40 8.81,80.48 22.78,77.77 15.23,65.71 29.43,64.92 23.60,51.95 37.77,53.10 33.76,39.46 47.65,42.53 45.53,28.47 58.87,33.40 58.69,19.18 71.23,25.88 72.99,11.77 84.50,20.12 88.16,6.38 98.43,16.22 103.93,3.10 112.77,14.25" fill="url(#sealGlow)"/>
+            <g fill="#f8e4df" font-family="Tinos, 'Times New Roman', serif">
+              <text font-size="17" letter-spacing=".2">
+                <textPath href="#sealTop" startOffset="50%" text-anchor="middle">CERTIFICATE OF AUTHENTICITY</textPath>
+              </text>
+              <text x="120" y="119" text-anchor="middle" font-size="19">THE DAY</text>
+              <text x="120" y="153" text-anchor="middle" font-size="19">ARCHIVE</text>
+            </g>
+          </svg>
+        </div>
+      </div>
+    </div>
+  </div>
+  <script>
+  (function () {
+    function fit(el, maxPx, minPx, maxW) {
+      if (!el) return;
+      el.style.whiteSpace = 'nowrap';
+      var size = maxPx; el.style.fontSize = size + 'px';
+      var limit = maxW || el.clientWidth;
+      while (el.scrollWidth > limit && size > minPx) { size -= 1; el.style.fontSize = size + 'px'; }
+    }
+    document.querySelectorAll('.name').forEach(function (e) { fit(e, 78, 30, 1180); });
+    document.querySelectorAll('.flower .f').forEach(function (e) { fit(e, 46, 22, null); });
+    document.querySelectorAll('.single .song').forEach(function (e) { fit(e, 32, 18, null); });
+  })();
+  </script>
+</body>
+</html>

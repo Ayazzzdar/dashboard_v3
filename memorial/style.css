@@ -1,0 +1,60 @@
+/* Shared look for every memorial page: paper, ink, double-rule frame, acanthus corners, type. */
+:root {
+  --paper: #f3eee2;
+  --ink: #1b1815;
+  --soft: #5b544a;
+  --rule: #2a2622;
+  --serif: 'Playfair Display', serif;
+  --book: 'Cormorant Garamond', serif;
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+html, body { width: 1414px; height: 2000px; background: var(--paper); }
+body {
+  position: relative;
+  color: var(--ink);
+  font-family: var(--serif);
+  overflow: hidden;
+}
+
+/* subtle paper grain */
+body::before {
+  content: ""; position: absolute; inset: 0;
+  background:
+    radial-gradient(ellipse at 50% 40%, rgba(255,255,255,.35), transparent 70%),
+    radial-gradient(ellipse at 50% 100%, rgba(120,100,70,.08), transparent 60%);
+  pointer-events: none;
+}
+
+/* double-rule frame */
+.frame { position: absolute; inset: 56px; border: 1.5px solid var(--rule); }
+.frame::after { content: ""; position: absolute; inset: 9px; border: .75px solid var(--rule); }
+
+.corner { position: absolute; width: 250px; height: 250px; background: url(assets/corner.png) no-repeat top left / contain; }
+.tl { top: 40px; left: 40px; }
+.tr { top: 40px; right: 40px; transform: scaleX(-1); }
+.bl { bottom: 40px; left: 40px; transform: scaleY(-1); }
+.br { bottom: 40px; right: 40px; transform: scale(-1,-1); }
+
+.page { position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; }
+
+/* rule with a centred diamond */
+.ornrule { display: flex; align-items: center; gap: 18px; width: 1120px; }
+.ornrule::before, .ornrule::after { content: ""; flex: 1; border-top: 1.5px solid var(--rule); }
+.ornrule i { width: 11px; height: 11px; border: 1.5px solid var(--rule); transform: rotate(45deg); }
+
+/* double-rule box, same as the page 5 cards */
+.box { position: relative; border: 1.25px solid var(--rule); }
+.box::after { content: ""; position: absolute; inset: 7px; border: .6px solid var(--rule); pointer-events: none; }
+
+/* letterspaced small-caps label, optionally with flanking rules */
+.cap {
+  font-family: var(--book);
+  font-weight: 600;
+  letter-spacing: .24em;
+  text-transform: uppercase;
+}
+.cap.ruled { display: flex; align-items: center; justify-content: center; gap: 14px; }
+.cap.ruled::before, .cap.ruled::after { content: ""; width: 30px; border-top: 1px solid var(--rule); }
+
+.lining { font-variant-numeric: lining-nums; }
+img.ico { display: block; object-fit: contain; }
