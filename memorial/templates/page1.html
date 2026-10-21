@@ -59,24 +59,25 @@
   .pop .n { font-size: 36px; line-height: 1; }
   .pop .cap { font-size: 15px; letter-spacing: .18em; margin-top: 10px; }
 
-  /* right column */
-  .right { padding-top: 30px; gap: 22px; min-height: 0; }
-  .right .box { text-align: center; padding: 22px 14px; }
-  .flower .cap { font-size: 17px; line-height: 1.35; }
-  .flower img { width: 120px; height: 130px; margin: 10px auto 6px; }
+  /* right column (compact, so the price box ends above the seal square) */
+  .right { padding-top: 30px; gap: 16px; min-height: 0; }
+  .right .box { text-align: center; padding: 14px 14px; }
+  .flower .cap { font-size: 17px; line-height: 1.3; }
+  .flower img { width: 104px; height: 112px; margin: 6px auto 4px; }
   .flower .f { font-size: 46px; line-height: 1; }
-  .single img { width: 74px; height: 74px; margin: 0 auto 10px; }
+  .single img { width: 64px; height: 64px; margin: 0 auto 6px; }
   .single .cap { font-size: 18px; }
-  .single .song { font-size: 32px; font-style: italic; margin-top: 8px; line-height: 1.1; }
-  .single .artist { font-family: var(--book); font-size: 25px; margin-top: 4px; }
-  .prices { flex: 1; min-height: 0; padding: 18px 14px !important; display: flex; flex-direction: column; justify-content: space-around; }
-  .prices .item img { width: 104px; height: 70px; margin: 0 auto 6px; }
-  /* certificate of authenticity: red foil seal drawn to match the original pack's seal */
-  .seal { flex: none; width: 236px; height: 236px; margin: 0 auto;
-          filter: drop-shadow(1px 2px 2px rgba(80,10,10,.25)); }
-  .seal svg { width: 100%; height: 100%; display: block; }
+  .single .song { font-size: 32px; font-style: italic; margin-top: 6px; line-height: 1.1; }
+  .single .artist { font-family: var(--book); font-size: 25px; margin-top: 3px; }
+  .prices { flex: none; padding: 12px 14px !important; display: flex; flex-direction: column; gap: 6px; }
+  .prices .item img { width: 84px; height: 56px; margin: 0 auto 4px; }
+  /* Reserved BLANK space for the physical 5cm x 5cm "Certificate" seal sticker,
+     applied by hand after printing. Nothing is printed here — the square is sized
+     a little over 5cm (≈355px at this 1414px page width) and tucked into the
+     bottom-right, clear of all text and icons. */
+  .seal { position: absolute; right: 66px; bottom: 188px; width: 355px; height: 355px; }
   .prices .cap { font-size: 16px; letter-spacing: .18em; }
-  .prices .p { font-size: 30px; margin-top: 2px; line-height: 1.1; }
+  .prices .p { font-size: 28px; margin-top: 1px; line-height: 1.05; }
 </style>
 </head>
 <body>
@@ -183,7 +184,7 @@
           <div class="item"><img class="ico" src="{{ASSETS}}/bread.png" alt=""><div class="cap">Bread (Loaf)</div><div class="p lining">{{BREAD}}</div></div>
           <div class="item"><img class="ico" src="{{ASSETS}}/eggs.png" alt=""><div class="cap">Dozen Eggs</div><div class="p lining">{{EGGS}}</div></div>
         </div>
-        <div class="seal" aria-hidden="true"></div>
+        <div class="seal" aria-hidden="true">{{SEAL_GUIDE}}</div>
       </div>
     </div>
   </div>
