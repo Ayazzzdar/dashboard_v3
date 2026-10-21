@@ -111,8 +111,12 @@ def _fill(template_html, data):
     return out
 
 
-def render_page(page_num, data, out_path, chrome=None, timeout=60):
-    """Render one page (1-5) to out_path (PNG)."""
+def render_page(page_num, data, out_path, chrome=None, timeout=60, scale=2):
+    """Render one page (1-5) to out_path (PNG).
+
+    scale is the device pixel ratio: 1 -> 1414x2000, 2 -> 2828x4000 (crisp for
+    A4 print, ~240 DPI). Default 2 so generated packs are print-ready.
+    """
     chrome = chrome or find_chrome()
     tpl = open(os.path.join(TPL_DIR, f"page{page_num}.html"), encoding="utf-8").read()
     filled = _fill(tpl, data)
@@ -122,7 +126,7 @@ def render_page(page_num, data, out_path, chrome=None, timeout=60):
     try:
         cmd = [
             chrome, "--headless=new", "--disable-gpu", "--no-sandbox", "--hide-scrollbars",
-            "--force-device-scale-factor=1", f"--window-size={PAGE_W},{PAGE_H}",
+            f"--force-device-scale-factor={scale}", f"--window-size={PAGE_W},{PAGE_H}",
             "--virtual-time-budget=8000", f"--screenshot={out_path}", f"file://{tmp_html}",
         ]
         subprocess.run(cmd, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL, timeout=timeout)
@@ -136,11 +140,12 @@ def render_page(page_num, data, out_path, chrome=None, timeout=60):
     return out_path
 
 
-def render_memorial_pack(data, output_dir, order_id="", name=""):
+def render_memorial_pack(data, output_dir, order_id="", name="", scale=2):
     """Render all 5 memorial pages. Returns the list of PNG paths.
 
     Filenames follow the pack convention: "{order_id} - {NAME} - {page}.png" when
-    order_id/name given, else "memorial - {page}.png".
+    order_id/name given, else "memorial - {page}.png". scale is the print DPI
+    multiplier (default 2 -> 2828x4000, crisp on A4).
     """
     os.makedirs(output_dir, exist_ok=True)
     chrome = find_chrome()
@@ -153,6 +158,6 @@ def render_memorial_pack(data, output_dir, order_id="", name=""):
             base = f"{disp_name} - {page}"
         safe = "".join(ch for ch in base if ch not in '<>:"/\\|?*').strip()
         out = os.path.join(output_dir, f"{safe}.png")
-        render_page(page, data, out, chrome=chrome)
+        render_page(page, data, out, chrome=chrome, scale=scale)
         paths.append(out)
     return paths

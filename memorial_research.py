@@ -72,6 +72,13 @@ def esc(s):
     return html.escape(str(s or ""), quote=False)
 
 
+def commaize(s):
+    """Add thousands separators to any run of 4+ digits (e.g. $78000 -> $78,000)."""
+    if not s:
+        return s
+    return re.sub(r"\d{4,}", lambda m: f"{int(m.group()):,}", str(s))
+
+
 def life_numbers(dob, dop):
     days = (dop - dob).days
     years = dop.year - dob.year - ((dop.month, dop.day) < (dob.month, dob.day))
@@ -330,7 +337,7 @@ def build_pack_data(name, dob, dop, api_key, progress=None):
         "DATE_LINE": f"{esc(weekday)}, {month_name} {day}<sup>{ordd}</sup> {year}",
         "LIFESPAN": f"{dob.year} – {dop.year}", "AGE": f"{ln['years']} years",
         "PM": esc(research.get("PrimeMinister")), "INCOMING_PM": esc(research.get("IncomingPM")),
-        "MONARCH": esc(research.get("Monarch")), "SALARY": esc(research.get("AverageSalary")),
+        "MONARCH": esc(research.get("Monarch")), "SALARY": esc(commaize(research.get("AverageSalary"))),
         "REM1_NAME": esc(rem[0].get("name")), "REM1_ROLE": esc(rem[0].get("role")),
         "REM2_NAME": esc(rem[1].get("name")), "REM2_ROLE": esc(rem[1].get("role")),
         "REM3_NAME": esc(rem[2].get("name")), "REM3_ROLE": esc(rem[2].get("role")),
@@ -342,7 +349,7 @@ def build_pack_data(name, dob, dop, api_key, progress=None):
         "WORLD_POP": esc(research.get("WorldPopulation")), "AUS_POP": esc(research.get("AustraliaPopulation")),
         "FLOWER_IMG": flower_img, "FLOWER_NAME": esc(flower_name),
         "SONG": esc(research.get("SongTitle")), "ARTIST": esc(research.get("SongArtist")),
-        "AVG_HOUSE": esc(research.get("AverageHouse")), "MILK": esc(research.get("MilkPrice")),
+        "AVG_HOUSE": esc(commaize(research.get("AverageHouse"))), "MILK": esc(research.get("MilkPrice")),
         "BREAD": esc(research.get("BreadPrice")), "EGGS": esc(research.get("EggsPrice")),
         # page 2
         "P2_DATE": f"{month_name} {day}<sup>{ordd}</sup>",
@@ -360,7 +367,7 @@ def build_pack_data(name, dob, dop, api_key, progress=None):
         "TV": esc(research.get("TVShow")), "TV_DESC": esc(research.get("TVShowDesc")),
         "FASHION": esc(research.get("FashionTrend")), "FASHION_DESC": esc(research.get("FashionDesc")),
         "TECH": esc(research.get("Technology")), "TECH_DESC": esc(research.get("TechDesc")),
-        "BIRTHS": esc(research.get("AustraliaBirths")), "BIRTHS_DESC": esc(research.get("BirthsDesc")),
+        "BIRTHS": esc(commaize(research.get("AustraliaBirths"))), "BIRTHS_DESC": esc(research.get("BirthsDesc")),
         # page 5
         "DAYS": ln["days"], "YEARS": str(ln["years"]), "WEEKS": ln["weeks"],
         "MOONS": ln["moons"], "HEARTBEATS": ln["heartbeats"],
