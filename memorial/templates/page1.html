@@ -53,31 +53,33 @@
   .facts p { font-family: var(--book); font-size: 26px; line-height: 1.3; margin-bottom: 9px; }
   .facts b { font-weight: 700; }
   .facts .gap { margin-top: 20px; }
-  .pop { display: grid; grid-template-columns: 1fr 1fr; gap: 22px; margin-top: auto; margin-bottom: 0; }
-  .pop .box { text-align: center; padding: 18px 10px 20px; }
-  .pop img { width: 150px; height: 118px; margin: 0 auto 12px; }
-  .pop .n { font-size: 36px; line-height: 1; }
-  .pop .cap { font-size: 15px; letter-spacing: .18em; margin-top: 10px; }
+  /* populations: smaller + narrower so the bottom-right stays clear for the seal */
+  .pop { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; width: 430px; margin: auto auto 0; }
+  .pop .box { text-align: center; padding: 12px 8px 14px; }
+  .pop img { width: 104px; height: 82px; margin: 0 auto 8px; }
+  .pop .n { font-size: 32px; line-height: 1; }
+  .pop .cap { font-size: 14px; letter-spacing: .16em; margin-top: 8px; }
 
-  /* right column (compact, so the price box ends above the seal square) */
-  .right { padding-top: 30px; gap: 16px; min-height: 0; }
-  .right .box { text-align: center; padding: 14px 14px; }
-  .flower .cap { font-size: 17px; line-height: 1.3; }
-  .flower img { width: 104px; height: 112px; margin: 6px auto 4px; }
+  /* right column: prices stretch to fill, and padding-bottom reserves the
+     seal square so the price box lengthens down to just above it. */
+  .right { padding-top: 30px; gap: 18px; min-height: 0; padding-bottom: 378px; }
+  .right .box { text-align: center; padding: 18px 14px; }
+  .flower .cap { font-size: 17px; line-height: 1.35; }
+  .flower img { width: 114px; height: 122px; margin: 8px auto 5px; }
   .flower .f { font-size: 46px; line-height: 1; }
-  .single img { width: 64px; height: 64px; margin: 0 auto 6px; }
+  .single img { width: 70px; height: 70px; margin: 0 auto 8px; }
   .single .cap { font-size: 18px; }
-  .single .song { font-size: 32px; font-style: italic; margin-top: 6px; line-height: 1.1; }
-  .single .artist { font-family: var(--book); font-size: 25px; margin-top: 3px; }
-  .prices { flex: none; padding: 12px 14px !important; display: flex; flex-direction: column; gap: 6px; }
-  .prices .item img { width: 84px; height: 56px; margin: 0 auto 4px; }
+  .single .song { font-size: 32px; font-style: italic; margin-top: 8px; line-height: 1.1; }
+  .single .artist { font-family: var(--book); font-size: 25px; margin-top: 4px; }
+  .prices { flex: 1; min-height: 0; padding: 18px 14px !important; display: flex; flex-direction: column; justify-content: space-around; }
+  .prices .item img { width: 100px; height: 66px; margin: 0 auto 6px; }
   /* Reserved BLANK space for the physical 5cm x 5cm "Certificate" seal sticker,
      applied by hand after printing. Nothing is printed here — the square is sized
      a little over 5cm (≈355px at this 1414px page width) and tucked into the
      bottom-right, clear of all text and icons. */
-  .seal { position: absolute; right: 66px; bottom: 188px; width: 355px; height: 355px; }
+  .seal { position: absolute; right: 72px; bottom: 140px; width: 355px; height: 355px; }
   .prices .cap { font-size: 16px; letter-spacing: .18em; }
-  .prices .p { font-size: 28px; margin-top: 1px; line-height: 1.05; }
+  .prices .p { font-size: 30px; margin-top: 2px; line-height: 1.1; }
 </style>
 </head>
 <body>
