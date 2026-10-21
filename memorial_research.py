@@ -138,10 +138,10 @@ Return ONLY valid JSON (no markdown), exactly this structure:
     "A third, different on-this-day event. MAX 18 WORDS."
   ],
   "Historical": [
-    {{"year": "1800s year", "text": "Event on {month_name} {day} in the 1800s. ONE sentence, 20-30 words."}},
-    {{"year": "early-1900s year", "text": "Event on {month_name} {day} (1900-1945). 20-30 words."}},
-    {{"year": "mid-1900s year", "text": "Event on {month_name} {day} (1946-1999). 20-30 words."}},
-    {{"year": "2000s year", "text": "Event on {month_name} {day} (2000+). 20-30 words."}}
+    {{"year": "1800s year", "text": "ONE COMPLETE SENTENCE (20-30 words) describing a major event that happened on {month_name} {day} in the 1800s. Include key details — who, what, where, and why it mattered. Example: 'On April 10, 1849, American inventor Walter Hunt patented the modern safety pin, a simple device he reportedly designed in three hours to settle a $15 debt.'"}},
+    {{"year": "early-1900s year", "text": "ONE COMPLETE SENTENCE (20-30 words) describing a major event on {month_name} {day} (1900-1945). Include who was involved, what happened, where, and its significance."}},
+    {{"year": "mid-1900s year", "text": "ONE COMPLETE SENTENCE (20-30 words) describing a major event on {month_name} {day} (1946-1999). Include who was involved, what happened, where, and why it mattered."}},
+    {{"year": "2000s year", "text": "ONE COMPLETE SENTENCE (20-30 words) describing a major event on {month_name} {day} (2000+). Include context and the significance of the event."}}
   ],
   "PrimeMinister": "Australian PM in {year}",
   "IncomingPM": "The PM who took office AFTER the {year} PM (short). If none/unknown, 'Unknown'.",
