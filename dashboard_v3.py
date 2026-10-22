@@ -908,6 +908,26 @@ def get_line_item_count(order: Dict) -> int:
     """Get the number of line items in an order"""
     return len(order.get("line_items", []))
 
+# "The Day You Passed Archive" (memorial) product — handled on the Memorial tab,
+# not the Birthday Orders tab. Keep this in sync with memorial_shopify.py.
+MEMORIAL_PRODUCT_ID = 9437528588443
+MEMORIAL_TITLE_HINT = "day you passed"
+
+def _line_item_is_memorial(line_item: Dict) -> bool:
+    if line_item.get("product_id") == MEMORIAL_PRODUCT_ID:
+        return True
+    return MEMORIAL_TITLE_HINT in (line_item.get("title") or "").lower()
+
+def is_memorial_order(order: Dict) -> bool:
+    """True when every line item is a memorial item (a pure 'Day You Passed'
+    order). These are hidden from the Birthday Orders tab and generated on the
+    Memorial tab instead. Mixed orders (birthday + memorial) are left visible so
+    their birthday item is never hidden."""
+    items = order.get("line_items", [])
+    if not items:
+        return False
+    return all(_line_item_is_memorial(li) for li in items)
+
 # ============================================================================
 # CLAUDE API FUNCTION
 # ============================================================================
@@ -1716,8 +1736,11 @@ def main():
         render_settings_page()
         return
     
-    # Main tabs
-    tab1, tab2, tab3, tab4, tab5 = st.tabs(["📋 Orders", "⚙️ Processing", "📊 History", "❌ Errors", "🕊️ Memorial"])
+    # Main tabs. Unpacked in DISPLAY order (Birthday Orders, Memorial, Processing,
+    # …) but assigned to the existing tab variables so the content blocks below
+    # stay put — tab1 = Birthday Orders, tab5 = Memorial, tab2 = Processing, etc.
+    tab1, tab5, tab2, tab3, tab4 = st.tabs(
+        ["🎂 Birthday Orders", "🕊️ Memorial Orders", "⚙️ Processing", "📊 History", "❌ Errors"])
 
     # ========================================================================
     # TAB 5: MEMORIAL PACK ("On the Day You Passed")
@@ -1732,8 +1755,9 @@ def main():
     # TAB 1: ORDERS
     # ========================================================================
     with tab1:
-        st.header("Unfulfilled Orders")
-        
+        st.header("🎂 Birthday Orders")
+        st.caption('"The Day You Passed" memorial orders are hidden here — generate those on the 🕊️ Memorial Orders tab.')
+
         # Fetch orders
         if st.button("🔄 Refresh Orders", type="primary"):
             if shopify_store and shopify_token:
@@ -1777,9 +1801,10 @@ def main():
                     )
                 )
             
-            # Apply filters
-            filtered = orders
-            
+            # Apply filters. Memorial ("Day You Passed") orders belong on the
+            # Memorial tab, so hide them from the Birthday Orders list.
+            filtered = [o for o in orders if not is_memorial_order(o)]
+
             if search:
                 filtered = [
                     o for o in filtered
