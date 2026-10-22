@@ -63,9 +63,19 @@ def _is_memorial_item(line_item):
     return MEMORIAL_TITLE_HINT in (line_item.get("title") or "").lower()
 
 
+def _quantity(line_item):
+    """Copies ordered of this line item (customers are prompted to buy multiple
+    copies). Defaults to 1 if missing/unparseable."""
+    try:
+        q = int(line_item.get("quantity") or 1)
+        return q if q > 0 else 1
+    except (TypeError, ValueError):
+        return 1
+
+
 def extract_memorial_orders(orders):
     """Return one record per memorial line item:
-    {order_name, item_index, multi, item_count, name, dob, dop, express}."""
+    {order_name, item_index, multi, item_count, name, dob, dop, express, quantity}."""
     out = []
     for o in orders:
         lis = o.get("line_items", [])
@@ -83,5 +93,6 @@ def extract_memorial_orders(orders):
                 "dob": (props.get("Date of Birth") or "").strip(),
                 "dop": (props.get("Date of Passing") or "").strip(),
                 "express": express,
+                "quantity": _quantity(lis[i]),
             })
     return out

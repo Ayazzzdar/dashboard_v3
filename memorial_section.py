@@ -39,13 +39,21 @@ def _get_api_key():
 
 
 def _render_one(name, dob, dop, api_key, out_dir, order_id="", express=False,
-                item_index=0, item_count=1, progress=None):
-    """Research + render one pack into out_dir; returns (paths, warnings)."""
+                item_index=0, item_count=1, copies=1, progress=None):
+    """Research + render one pack into out_dir; returns (paths, warnings).
+
+    `copies` is the quantity ordered of this line item. When >1 the PNG file
+    names carry a "(N COPIES)" tag so the printer knows how many to run off.
+    """
     tokens, warnings = build_pack_data(name, dob, dop, api_key, progress=progress)
     oid = order_id
     if item_count > 1:
         oid = f"{order_id} (Item {item_index + 1} of {item_count})"
-    disp_name = f"{name} (EXPRESS)" if express else name
+    disp_name = name
+    if express:
+        disp_name = f"{disp_name} (EXPRESS)"
+    if copies and int(copies) > 1:
+        disp_name = f"{disp_name} ({int(copies)} COPIES)"
     paths = render_memorial_pack(tokens, out_dir, order_id=oid.strip(), name=disp_name)
     return paths, warnings
 
@@ -100,42 +108,62 @@ def render_memorial_section():
             st.info("No unfulfilled memorial orders found.")
             return
 
-        st.success(f"{len(items)} memorial order(s) ready.")
-        st.dataframe(
-            [{"Order": it["order_name"], "Name": it["name"], "Born": it["dob"],
-              "Passed": it["dop"], "Express": "✓" if it["express"] else ""}
-             for it in items],
-            use_container_width=True, hide_index=True,
+        st.success(f"{len(items)} memorial line item(s) found.")
+        st.caption("Untick any you want to skip. **Qty** = copies ordered — it's "
+                   "added to the PNG file names, e.g. `… (3 COPIES) …`.")
+
+        rows = [{"Generate": True,
+                 "Order": it["order_name"], "Name": it["name"],
+                 "Born": it["dob"], "Passed": it["dop"],
+                 "Qty": int(it.get("quantity", 1) or 1),
+                 "Express": "✓" if it["express"] else ""}
+                for it in items]
+        edited = st.data_editor(
+            rows, use_container_width=True, hide_index=True, key="memorial_editor",
+            column_config={
+                "Generate": st.column_config.CheckboxColumn("Generate", default=True),
+                "Qty": st.column_config.NumberColumn("Qty", help="Copies ordered"),
+            },
+            disabled=["Order", "Name", "Born", "Passed", "Express"],
         )
+        # which rows are ticked (order is preserved, so index maps back to items)
+        sel_idx = [i for i, r in enumerate(edited) if r.get("Generate")]
+        total_copies = sum(int(edited[i].get("Qty", 1) or 1) for i in sel_idx)
 
         if not api_key:
             st.error("A Claude API key is required (set it in the sidebar).")
             return
 
-        if st.button(f"🎨 Generate all {len(items)} pack(s)", type="primary"):
+        n_sel = len(sel_idx)
+        label = (f"🎨 Generate {n_sel} selected pack(s)"
+                 + (f" · {total_copies} copies to print" if total_copies != n_sel else ""))
+        if st.button(label, type="primary", disabled=(n_sel == 0)):
             out_dir = tempfile.mkdtemp(prefix="memorial_batch_")
             all_paths, errors = [], []
             prog = st.progress(0.0)
             status = st.empty()
-            for n, it in enumerate(items, start=1):
-                status.markdown(f"**{n}/{len(items)}** — {it['name'] or it['order_name']}")
+            for n, i in enumerate(sel_idx, start=1):
+                it = items[i]
+                copies = int(edited[i].get("Qty", 1) or 1)   # editable, so honour any override
+                status.markdown(f"**{n}/{n_sel}** — {it['name'] or it['order_name']}"
+                                + (f" ({copies} copies)" if copies > 1 else ""))
                 try:
                     paths, warns = _render_one(
                         it["name"], it["dob"], it["dop"], api_key, out_dir,
                         order_id=it["order_name"], express=it["express"],
                         item_index=it["item_index"], item_count=it["item_count"],
-                        progress=lambda m: status.caption(m))
+                        copies=copies, progress=lambda m: status.caption(m))
                     all_paths.extend(paths)
                     for w in warns:
                         st.warning(f"{it['order_name']}: {w}")
                 except Exception as e:
                     errors.append(f"{it['order_name']} ({it['name']}): {e}")
-                prog.progress(n / len(items))
+                prog.progress(n / n_sel)
                 if n % 3 == 0:
                     gc.collect()
             status.empty()
             if all_paths:
-                st.success(f"Rendered {len(all_paths)} PNG(s) for {len(items) - len(errors)} order(s).")
+                st.success(f"Rendered {len(all_paths)} PNG(s) for {n_sel - len(errors)} order(s).")
                 st.download_button("📦 Download all packs (zip)", data=_zip_bytes(all_paths),
                                    file_name="memorial_packs.zip", mime="application/zip",
                                    key="memorial_batch_zip")
@@ -156,7 +184,10 @@ def render_memorial_section():
         dop = c2.date_input("Date of passing", value=today,
                             min_value=datetime.date(1900, 1, 1), max_value=today, format="DD/MM/YYYY")
         key_in = st.text_input("Claude API key", value=api_key, type="password")
-        order_id = st.text_input("Order number (optional)", placeholder="#1234")
+        c3, c4 = st.columns(2)
+        order_id = c3.text_input("Order number (optional)", placeholder="#1234")
+        copies = c4.number_input("Copies", min_value=1, max_value=99, value=1, step=1,
+                                 help="Shown in the file name as (N COPIES) when more than 1.")
         submitted = st.form_submit_button("🎨 Generate memorial pack", type="primary")
 
     if not submitted:
@@ -172,7 +203,7 @@ def render_memorial_section():
     try:
         out_dir = tempfile.mkdtemp(prefix="memorial_")
         paths, warnings = _render_one(name, dob, dop, key_in, out_dir,
-                                      order_id=order_id.strip(),
+                                      order_id=order_id.strip(), copies=int(copies),
                                       progress=lambda m: status.info(m))
     except Exception as e:
         status.empty()
