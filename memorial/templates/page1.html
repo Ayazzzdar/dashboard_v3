@@ -198,6 +198,9 @@
       var size = maxPx; el.style.fontSize = size + 'px';
       var limit = maxW || el.clientWidth;
       while (el.scrollWidth > limit && size > minPx) { size -= 1; el.style.fontSize = size + 'px'; }
+      // last resort: if it still doesn't fit on one line, allow wrapping so it
+      // can never spill past the box border.
+      if (el.scrollWidth > limit) { el.style.whiteSpace = 'normal'; }
     }
     document.querySelectorAll('.name').forEach(function (e) { fit(e, 78, 30, 1180); });
     document.querySelectorAll('.flower .f').forEach(function (e) { fit(e, 46, 22, null); });

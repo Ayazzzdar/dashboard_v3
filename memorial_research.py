@@ -155,8 +155,8 @@ Return ONLY valid JSON (no markdown), exactly this structure:
   "Bathurst": "Bathurst 1000 winner(s) {year}",
   "AusOpenMen": "Australian Open men's singles champion {year}",
   "AusOpenWomen": "Australian Open women's singles champion {year}",
-  "SongTitle": "#1 song around {month_name} {year} (ARIA if it exists, else global)",
-  "SongArtist": "...the artist",
+  "SongTitle": "The #1 / top-charting song around {month_name} {year} — ARIA (Australia) if known, else the US Billboard or global #1. ALWAYS give a real, specific song title; NEVER 'Unverified', 'Unknown', 'check ARIA' or any placeholder. If unsure of the exact #1, give the single most popular song of that period.",
+  "SongArtist": "The performing artist of that song — always a real name, never a placeholder.",
   "AverageSalary": "Average Australian annual salary {year}, e.g. $95,000",
   "AverageHouse": "Average Australian house price {year}, e.g. $920,000",
   "MilkPrice": "Milk 1L {year}, e.g. $1.60",
@@ -276,11 +276,23 @@ def build_pack_data(name, dob, dop, api_key, progress=None):
         progress(f"🔍 Researching {month_name} {day}, {year}…")
     research = _call_claude(month_name, day, year, api_key)
     research = _apply_overrides(research, day, dop.month, year)
-    # song fallback
-    if not research.get("SongTitle") or str(research.get("SongTitle")).lower() in ("", "unknown"):
+    # Song: the pack must ALWAYS show a real chart-topper. If the model returned
+    # a placeholder ("Unverified", "check ARIA charts May 2026", "Unknown", blank…
+    # — which also overflowed the small #1 Single box), fall back to the verified
+    # yearly #1 from the lookup table, which always returns a song.
+    def _song_placeholder(v):
+        s = str(v or "").strip().lower()
+        if not s or s in ("unknown", "n/a", "na", "tbc", "none", "-", "—", "tba"):
+            return True
+        return any(w in s for w in ("unverified", "unavailable", "not available",
+                                    "check aria", "aria chart", "to be confirmed",
+                                    "to be announced", "cutoff"))
+    if _song_placeholder(research.get("SongTitle")) or _song_placeholder(research.get("SongArtist")):
         fb = LT.get_number1_song_fallback(year)
         if fb and " - " in fb:
             research["SongTitle"], research["SongArtist"] = [x.strip() for x in fb.split(" - ", 1)]
+        elif fb:
+            research["SongTitle"], research["SongArtist"] = fb, ""
 
     # clean unknown placeholders on short fields
     for k in ("PrimeMinister", "IncomingPM", "Monarch", "NRLWinner", "AFLWinner",

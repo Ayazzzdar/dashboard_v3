@@ -1543,10 +1543,13 @@ def process_order(order: Dict, claude_api_key: str, item_index: int = 0, progres
     # since no full-year chart data exists yet.
     # ------------------------------------------------------------------
     current_song = complete_data.get('Number1Song', '')
+    _song_l = str(current_song).strip().lower()
     song_is_unknown = (
         not current_song or
-        str(current_song).strip().lower() in ['unknown', 'n/a', 'not available', 'not found', ''] or
-        'unknown' in str(current_song).lower() or
+        _song_l in ['unknown', 'n/a', 'not available', 'not found', ''] or
+        any(w in _song_l for w in ('unknown', 'unverified', 'unavailable', 'check aria',
+                                   'aria chart', 'not available', 'to be confirmed',
+                                   'to be announced')) or
         year >= 2026
     )
     if song_is_unknown:
