@@ -23,9 +23,13 @@ API_VERSION = "2024-01"
 FIELDS = "id,name,email,line_items,fulfillment_status,created_at,shipping_lines"
 
 
-def fetch_unfulfilled_orders(token, store):
-    """Fetch ALL unfulfilled orders (cursor pagination; filters only on page 1,
-    the same fix as the main dashboard)."""
+def fetch_unfulfilled_orders(token, store, include_fulfilled=False):
+    """Fetch memorial-eligible orders (cursor pagination; filters only on page 1,
+    the same fix as the main dashboard).
+
+    By default only UNFULFILLED orders are returned. Pass include_fulfilled=True
+    to return every order (any fulfilment status) — useful for regenerating a
+    pack for an order that has already been fulfilled."""
     base = f"https://{store}/admin/api/{API_VERSION}/orders.json"
     headers = {"X-Shopify-Access-Token": token, "Content-Type": "application/json"}
     all_orders, page_info = [], None
@@ -33,8 +37,9 @@ def fetch_unfulfilled_orders(token, store):
         if page_info:
             params = {"limit": 250, "fields": FIELDS, "page_info": page_info}
         else:
-            params = {"status": "any", "fulfillment_status": "unfulfilled",
-                      "limit": 250, "fields": FIELDS}
+            params = {"status": "any", "limit": 250, "fields": FIELDS}
+            if not include_fulfilled:
+                params["fulfillment_status"] = "unfulfilled"
         r = requests.get(base, headers=headers, params=params, timeout=30)
         if r.status_code != 200:
             raise RuntimeError(f"Shopify API {r.status_code}: {r.text[:200]}")

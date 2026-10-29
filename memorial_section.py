@@ -91,10 +91,20 @@ def render_memorial_section():
             st.warning("Add your Shopify store + token in the sidebar (⚙️ Controls) first.")
             return
 
-        if st.button("🔄 Load unfulfilled memorial orders", type="primary"):
+        status_choice = st.selectbox(
+            "Orders to load",
+            ["Unfulfilled only", "All orders (incl. fulfilled)"],
+            index=0,
+            help="Switch to 'All orders' to regenerate a pack for an order that has "
+                 "already been fulfilled.",
+        )
+        include_fulfilled = status_choice.startswith("All")
+
+        if st.button("🔄 Load memorial orders", type="primary"):
             try:
                 with st.spinner("Fetching from Shopify…"):
-                    orders = fetch_unfulfilled_orders(token, store)
+                    orders = fetch_unfulfilled_orders(token, store,
+                                                      include_fulfilled=include_fulfilled)
                     st.session_state.memorial_items = extract_memorial_orders(orders)
             except Exception as e:
                 st.error(f"Could not fetch orders: {e}")
@@ -102,7 +112,8 @@ def render_memorial_section():
 
         items = st.session_state.get("memorial_items")
         if items is None:
-            st.caption('Click "Load" to find "The Day You Passed Archive" orders awaiting fulfilment.')
+            st.caption('Choose which orders to load, then click "Load" to find '
+                       '"The Day You Passed Archive" orders.')
             return
         if not items:
             st.info("No unfulfilled memorial orders found.")
