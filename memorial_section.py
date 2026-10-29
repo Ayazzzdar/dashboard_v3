@@ -24,7 +24,7 @@ import streamlit as st
 
 from memorial_research import build_pack_data
 from memorial_render import render_memorial_pack, find_chrome
-from memorial_shopify import fetch_unfulfilled_orders, extract_memorial_orders
+from memorial_shopify import fetch_unfulfilled_orders, fetch_order_by_name, extract_memorial_orders
 
 
 def _get_api_key():
@@ -91,21 +91,39 @@ def render_memorial_section():
             st.warning("Add your Shopify store + token in the sidebar (⚙️ Controls) first.")
             return
 
-        status_choice = st.selectbox(
-            "Orders to load",
-            ["Unfulfilled only", "All orders (incl. fulfilled)"],
-            index=0,
-            help="Switch to 'All orders' to regenerate a pack for an order that has "
-                 "already been fulfilled.",
-        )
+        colA, colB = st.columns([2, 1])
+        with colA:
+            status_choice = st.selectbox(
+                "Orders to load",
+                ["Unfulfilled only", "All orders (incl. fulfilled)"],
+                index=0,
+                help="Switch to 'All orders' to regenerate a pack for an order that "
+                     "has already been fulfilled. For a single fulfilled order, the "
+                     "box on the right is faster.",
+            )
+        with colB:
+            order_q = st.text_input(
+                "…or a specific order #", placeholder="e.g. 4663",
+                help="Load just one order (fulfilled or not) in a single lookup — "
+                     "no scanning, so it won't hit Shopify's rate limit.",
+            )
         include_fulfilled = status_choice.startswith("All")
 
         if st.button("🔄 Load memorial orders", type="primary"):
             try:
                 with st.spinner("Fetching from Shopify…"):
-                    orders = fetch_unfulfilled_orders(token, store,
-                                                      include_fulfilled=include_fulfilled)
+                    if order_q.strip():
+                        orders = fetch_order_by_name(token, store, order_q)
+                    else:
+                        orders = fetch_unfulfilled_orders(token, store,
+                                                          include_fulfilled=include_fulfilled)
                     st.session_state.memorial_items = extract_memorial_orders(orders)
+                if order_q.strip():
+                    if not orders:
+                        st.warning(f"No order found matching '{order_q.strip()}'.")
+                    elif not st.session_state.memorial_items:
+                        st.warning(f"Order {order_q.strip()} has no 'Day You Passed' "
+                                   f"line item — nothing to generate.")
             except Exception as e:
                 st.error(f"Could not fetch orders: {e}")
                 return
