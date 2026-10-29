@@ -97,6 +97,40 @@ def fetch_order_by_name(token, store, order_number):
     return [o for o in orders if o.get("name", "").lstrip("#") == want]
 
 
+def parse_order_numbers(text):
+    """Split a string of order numbers into a clean list, e.g.
+    '4696, 4747  #4678' -> ['4696', '4747', '4678'] (de-duplicated, order kept)."""
+    out, seen = [], set()
+    for tok in re.split(r"[,\s]+", str(text or "").strip()):
+        n = tok.strip().lstrip("#")
+        if n and n not in seen:
+            seen.add(n)
+            out.append(n)
+    return out
+
+
+def fetch_orders_by_names(token, store, order_numbers):
+    """Fetch several orders by number/name in one go. `order_numbers` may be a
+    list or a comma/space separated string (e.g. '4696, 4747, 4678'). Each is a
+    single exact lookup, so it works for fulfilled or unfulfilled orders without
+    scanning. Returns a de-duplicated list of orders."""
+    names = (order_numbers if isinstance(order_numbers, (list, tuple))
+             else parse_order_numbers(order_numbers))
+    seen, out = set(), []
+    for i, n in enumerate(names):
+        n = str(n).strip().lstrip("#")
+        if not n:
+            continue
+        if i:
+            time.sleep(0.5)  # stay under Shopify's 2 req/sec REST limit
+        for o in fetch_order_by_name(token, store, n):
+            key = o.get("name") or o.get("id")
+            if key not in seen:
+                seen.add(key)
+                out.append(o)
+    return out
+
+
 def _is_express(order):
     for line in order.get("shipping_lines", []) or []:
         if "express" in f"{line.get('title', '')} {line.get('code', '')}".lower():

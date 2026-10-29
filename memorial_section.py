@@ -24,7 +24,8 @@ import streamlit as st
 
 from memorial_research import build_pack_data
 from memorial_render import render_memorial_pack, find_chrome
-from memorial_shopify import fetch_unfulfilled_orders, fetch_order_by_name, extract_memorial_orders
+from memorial_shopify import (fetch_unfulfilled_orders, fetch_orders_by_names,
+                              parse_order_numbers, extract_memorial_orders)
 
 
 def _get_api_key():
@@ -103,9 +104,10 @@ def render_memorial_section():
             )
         with colB:
             order_q = st.text_input(
-                "…or a specific order #", placeholder="e.g. 4663",
-                help="Load just one order (fulfilled or not) in a single lookup — "
-                     "no scanning, so it won't hit Shopify's rate limit.",
+                "…or specific order #(s)", placeholder="e.g. 4696, 4747, 4678",
+                help="Load one or more orders (fulfilled or not) by number — "
+                     "separate several with commas. Each is an exact lookup, so no "
+                     "scanning and no rate-limit issues.",
             )
         include_fulfilled = status_choice.startswith("All")
 
@@ -113,17 +115,23 @@ def render_memorial_section():
             try:
                 with st.spinner("Fetching from Shopify…"):
                     if order_q.strip():
-                        orders = fetch_order_by_name(token, store, order_q)
+                        orders = fetch_orders_by_names(token, store, order_q)
                     else:
                         orders = fetch_unfulfilled_orders(token, store,
                                                           include_fulfilled=include_fulfilled)
                     st.session_state.memorial_items = extract_memorial_orders(orders)
                 if order_q.strip():
-                    if not orders:
-                        st.warning(f"No order found matching '{order_q.strip()}'.")
-                    elif not st.session_state.memorial_items:
-                        st.warning(f"Order {order_q.strip()} has no 'Day You Passed' "
-                                   f"line item — nothing to generate.")
+                    requested = parse_order_numbers(order_q)
+                    found = {o.get("name", "").lstrip("#") for o in orders}
+                    missing = [n for n in requested if n not in found]
+                    if missing:
+                        st.warning("Not found: " + ", ".join("#" + m for m in missing))
+                    with_mem = {it["order_name"].lstrip("#")
+                                for it in st.session_state.memorial_items}
+                    no_mem = [n for n in requested if n in found and n not in with_mem]
+                    if no_mem:
+                        st.warning("No 'Day You Passed' item on: "
+                                   + ", ".join("#" + m for m in no_mem))
             except Exception as e:
                 st.error(f"Could not fetch orders: {e}")
                 return
