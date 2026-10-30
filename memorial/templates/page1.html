@@ -71,8 +71,10 @@
   .single .cap { font-size: 18px; }
   .single .song { font-size: 32px; font-style: italic; margin-top: 8px; line-height: 1.1; }
   .single .artist { font-family: var(--book); font-size: 25px; margin-top: 4px; }
-  .prices { flex: 1; min-height: 0; padding: 18px 14px !important; display: flex; flex-direction: column; justify-content: space-around; }
-  .prices .item img { width: 100px; height: 66px; margin: 0 auto 6px; }
+  /* flex:1 0 auto -> fills spare space but NEVER shrinks below its content, so
+     the last price (eggs) can never spill past the box border. */
+  .prices { flex: 1 0 auto; padding: 14px 14px !important; display: flex; flex-direction: column; justify-content: space-between; gap: 6px; }
+  .prices .item img { width: 94px; height: 60px; margin: 0 auto 5px; }
   /* Reserved BLANK space for the physical 5cm x 5cm "Certificate" seal sticker,
      applied by hand after printing. Nothing is printed here — the square is sized
      a little over 5cm (≈355px at this 1414px page width) and tucked into the
