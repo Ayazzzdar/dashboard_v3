@@ -958,8 +958,13 @@ def birthday_issue(birthday):
     if len(yr) != 4:
         return f"Year '{yr}' isn't 4 digits — did they mean 19{yr} or 20{yr}?"
     y = int(yr)
-    if not (1 <= mo <= 12) or not (1 <= d <= 31):
-        return "Day or month out of range"
+    if not (1 <= mo <= 12):
+        # the middle value must be the month (1-12); a value like 30 usually
+        # means the day and month were swapped (e.g. 12/30 instead of 12/03).
+        return (f"Month '{mo:02d}' is invalid — day & month may be swapped "
+                f"(expected DD/MM/YYYY)")
+    if not (1 <= d <= 31):
+        return f"Day '{d:02d}' is out of range (expected DD/MM/YYYY)"
     try:
         datetime(y, mo, d)
     except ValueError:
