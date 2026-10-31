@@ -928,6 +928,46 @@ def is_memorial_order(order: Dict) -> bool:
         return False
     return all(_line_item_is_memorial(li) for li in items)
 
+
+def parse_order_range(text):
+    """Parse '4583 - 4612' (also '4583-4612', '4583 to 4612', or a single '4600')
+    into (lo, hi). Returns (None, None) if it can't be parsed."""
+    s = str(text or "").replace("#", "").strip()
+    if not s:
+        return (None, None)
+    m = re.match(r'^\s*(\d+)\s*(?:[-–—]|to)?\s*(\d+)?\s*$', s, re.IGNORECASE)
+    if not m:
+        return (None, None)
+    lo = int(m.group(1))
+    hi = int(m.group(2)) if m.group(2) else lo
+    return (min(lo, hi), max(lo, hi))
+
+
+def birthday_issue(birthday):
+    """Return a short reason a birthday looks wrong (so the row is flagged red),
+    or '' if it looks fine. Catches a missing date, 2-digit years (customer types
+    98 instead of 1998), bad formats, impossible dates and implausible years.
+    Expects DD/MM/YYYY (the store's format)."""
+    b = (birthday or "").strip()
+    if not b:
+        return "No birthday entered"
+    m = re.match(r'^(\d{1,2})[/\-.](\d{1,2})[/\-.](\d{1,4})$', b)
+    if not m:
+        return "Unrecognised date — expected DD/MM/YYYY"
+    d, mo, yr = int(m.group(1)), int(m.group(2)), m.group(3)
+    if len(yr) != 4:
+        return f"Year '{yr}' isn't 4 digits — did they mean 19{yr} or 20{yr}?"
+    y = int(yr)
+    if not (1 <= mo <= 12) or not (1 <= d <= 31):
+        return "Day or month out of range"
+    try:
+        datetime(y, mo, d)
+    except ValueError:
+        return "Not a real calendar date"
+    if y < 1900 or y > datetime.now().year:
+        return f"Year {y} looks wrong"
+    return ""
+
 # ============================================================================
 # CLAUDE API FUNCTION
 # ============================================================================
@@ -1863,7 +1903,49 @@ def main():
             with col2:
                 if st.button("✗ Deselect All", key="deselect_all_btn", use_container_width=True):
                     st.session_state.selected_orders = []
-            
+
+            # Range select: type e.g. "4583 - 4612" to tick every order in that
+            # range at once. It ADDS to the current selection, so you can still
+            # tick/untick individual orders afterwards.
+            rcol1, rcol2 = st.columns([3, 1])
+            with rcol1:
+                range_input = st.text_input(
+                    "Select a range of order numbers",
+                    placeholder="Tick a range, e.g. 4583 - 4612",
+                    key="bday_range_input", label_visibility="collapsed")
+            with rcol2:
+                if st.button("➕ Tick range", key="select_range_btn", use_container_width=True):
+                    lo, hi = parse_order_range(range_input)
+                    if lo is None:
+                        st.warning("Enter a range like 4583 - 4612 (or a single order #).")
+                    else:
+                        added = 0
+                        for o in filtered:
+                            try:
+                                num = int(o['name'].replace('#', ''))
+                            except ValueError:
+                                continue
+                            if lo <= num <= hi and o['name'] not in st.session_state.selected_orders:
+                                st.session_state.selected_orders.append(o['name'])
+                                added += 1
+                        st.success(f"Ticked {added} order(s) in {lo}–{hi}.")
+
+            # Flag orders whose birthday looks wrong (2-digit year, bad date, blank).
+            # Only personalization items (those with a name/birthday) are checked,
+            # so add-ons like "Frame your order" aren't flagged.
+            flagged = []
+            for o in filtered:
+                for ii in range(get_line_item_count(o)):
+                    nm, bd = extract_personalization_data(o, ii)
+                    if (nm or bd) and birthday_issue(bd):
+                        flagged.append(o['name'])
+                        break
+            if flagged:
+                st.error(
+                    f"⚠️ {len(flagged)} order(s) have a birthday that needs fixing "
+                    f"(highlighted red below — click ✏️ to correct, e.g. 98 → 1998): "
+                    + ", ".join(flagged[:20]) + (" …" if len(flagged) > 20 else ""))
+
             st.markdown(f"**Selected: {len(st.session_state.selected_orders)} orders**")
             st.markdown("---")
             
@@ -1884,7 +1966,20 @@ def main():
                     item_key = f"{order['name']}_item{item_idx}"
                     edit_key = f"edit_{item_key}"
                     is_editing = st.session_state.get(edit_key, False)
-                    
+
+                    # Flag a wrong-looking birthday in red (only for personalization
+                    # items, i.e. ones that carry a name/birthday — not add-ons).
+                    display_name = order['name']
+                    if line_item_count > 1:
+                        display_name = f"{order['name']} ({item_idx + 1}/{line_item_count})"
+                    dob_issue = birthday_issue(birthday) if (full_name or birthday) else ""
+                    if dob_issue:
+                        st.markdown(
+                            f"<div style='background:#7f1d1d;color:#fecaca;padding:6px 12px;"
+                            f"border-radius:6px;margin:0.4rem 0 0;font-weight:600'>"
+                            f"⚠️ {display_name} — birthday needs checking: {dob_issue} "
+                            f"Click ✏️ to fix.</div>", unsafe_allow_html=True)
+
                     # Check if this order has notes (only check on first item)
                     has_notes = False
                     if item_idx == 0:
@@ -1951,9 +2046,15 @@ def main():
                                 label_visibility="collapsed"
                             )
                         else:
-                            # Display mode - show value or dash
-                            if birthday:
+                            # Display mode - show value (red if it needs checking)
+                            if birthday and dob_issue:
+                                st.markdown(f"<span style='color:#f87171;font-weight:600'>🎂 {birthday} ⚠️</span>",
+                                            unsafe_allow_html=True)
+                            elif birthday:
                                 st.write(f"🎂 {birthday}")
+                            elif dob_issue:
+                                st.markdown("<span style='color:#f87171;font-weight:600'>— no birthday ⚠️</span>",
+                                            unsafe_allow_html=True)
                             else:
                                 st.write("—")
                     
